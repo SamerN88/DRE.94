@@ -1,4 +1,4 @@
-"""Global constants"""
+"""Global constants, fundamental values of B94."""
 
 import itertools
 from misc import permute

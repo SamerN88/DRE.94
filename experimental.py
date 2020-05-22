@@ -1,4 +1,4 @@
-"""Functions that test B94's algorithm"""
+"""Functions that test B94's algorithm."""
 
 
 import random
@@ -13,6 +13,8 @@ from radix import base94_to_base10
 
 # Tests reliability of algorithm by checking if decrypted values match original values, for any number of trials
 def reliance_test(trials, verbose=True, super_verbose=False):
+    """Tests reliability of algorithm by checking if decrypted values match original values for any number of trials."""
+
     if super_verbose:
         verbose = True
 
@@ -57,6 +59,8 @@ def reliance_test(trials, verbose=True, super_verbose=False):
 
 # Function that brute-forces B94; user has the option to specify key used (strictly verbose)
 def brute_force(key=None):
+    """Function that brute-forces B94; user has the option to specify key used (strictly verbose)."""
+
     if key:
         key_error_check(key)
     else:
@@ -106,9 +110,3 @@ def brute_force(key=None):
     print('*' * KEY_LENGTH)
 
     print('\nEnd brute force:', end_datetime)
-
-
-# Method documentation
-reliance_test.__doc__ = "Tests reliability of algorithm by checking if decrypted values match original values, " \
-                        "for any number of trials"
-brute_force.__doc__ = "Function that brute-forces B94; user has the option to specify key used (strictly verbose)"

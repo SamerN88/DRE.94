@@ -6,23 +6,26 @@
 
    Keyspace size ~ 1.0873661567e+146
 
-   Supports arbitrary input character encoding (output ciphertext strictly ASCII)"""
+   Supports arbitrary input character encoding (output ciphertext strictly ASCII)."""
 
+# TODO: update docstrings to describe parameters and return values and their types
 # TODO: consider how to access all methods from B94.<method> (possibly have central file that imports * from all files)
 
 import random
 import secrets
 
-from misc import driver_cwd, arg_check
+from misc import driver_cwd, arg_check, shuffle_base11
 from radix import baseN_to_base10, base10_to_baseN
 from global_constants import KEY_CHARMAP, KEY_LENGTH
 from key_fxns import key_error_check
 
 
-# Generates a string of length 94 with unique characters, using ASCII values 33-126
+# Generates a string of length 94 with distinct characters, using ASCII values 33-126
 def generate_key(seed=None):
+    """Generates a B94 key: string of length 94 with distinct characters, using ASCII characters 33-126."""
+
     # If seed, ensure that seed is hashable; if not, raise proper error plus the invalid seed
-    if seed:
+    if seed is not None:
         try:
             random.seed(seed)
             key = ''.join(random.sample(KEY_CHARMAP, KEY_LENGTH))
@@ -46,6 +49,8 @@ def generate_key(seed=None):
 
 # Encrypts string with arbitrary character encoding into ASCII ciphertext
 def encrypt(text_source, key, fromfile=False):
+    """Encrypts string with arbitrary character encoding into ASCII ciphertext (using a B94 key)."""
+
     arg_check(fromfile, 'fromfile', bool)
     key_error_check(key)
 
@@ -61,7 +66,7 @@ def encrypt(text_source, key, fromfile=False):
     if text == '':
         return ''
 
-    # Get set of unique chars in text; to be used as numbering system.
+    # Get set of distinct chars in text; to be used as numbering system.
     charset = list(set(text))
 
     # If first character in text is 0th digit, it will disappear in decryption; swap first and last digits to fix this
@@ -77,7 +82,7 @@ def encrypt(text_source, key, fromfile=False):
     base10_cipher = baseN_to_base10(text, charset) ^ obstructor
 
     # Get shuffled base-11 digits with key as seed
-    base11_digits = get_base11_digits(key)
+    base11_digits = shuffle_base11(key)
 
     # Tag contains info on length of text and ords of charset (lengthens cipher, but necessary for arbitrary charset)
     tag = str(len(text)) + ' ' + ' '.join(str(ord(ch)) for ch in charset)  # tag is in base-11 (0123456789 + SPACE)
@@ -94,6 +99,8 @@ def encrypt(text_source, key, fromfile=False):
 
 # Decrypts ASCII ciphertext into plaintext with arbitrary character encoding
 def decrypt(cipher_source, key, fromfile=False):
+    """Decrypts ASCII ciphertext into plaintext with arbitrary character encoding (using a B94 key)."""
+
     arg_check(fromfile, 'fromfile', bool)
     key_error_check(key)
 
@@ -115,7 +122,7 @@ def decrypt(cipher_source, key, fromfile=False):
         return ''
 
     # Get shuffled base-11 digits with key as seed
-    base11_digits = get_base11_digits(key)
+    base11_digits = shuffle_base11(key)
 
     # Get obstructor (cipher was XOR'd with obstructor in encryption)
     obstructor = abs(hash(key))
@@ -145,28 +152,3 @@ def decrypt(cipher_source, key, fromfile=False):
         text *= length
 
     return text
-
-
-# Shuffles base-11 digits with key as seed (0 or SPACE must be 0th digit as they can't be first char in base-11 cipher)
-def get_base11_digits(key):
-    key_error_check(key)
-
-    # Get zero digit
-    zeros = list(' 0')
-    random.seed(key)
-    z_index = random.randint(0, 1)
-    zero = zeros[z_index]
-
-    # Get list of non-zero digits
-    non_zero = list('123456789' + zeros[1 - z_index])
-    random.shuffle(non_zero, random.seed(key))
-
-    return [zero] + non_zero
-
-
-# Method documentation
-generate_key.__doc__ = "Generates a string of length 94 with unique characters, using ASCII values 33-126"
-encrypt.__doc__ = "Encrypts string with arbitrary character encoding into ASCII ciphertext"
-decrypt.__doc__ = "Decrypts ASCII ciphertext into plaintext with arbitrary character encoding"
-get_base11_digits.__doc__ = "Shuffles base-11 digits (0123456789 + SPACE) with key as seed"
-

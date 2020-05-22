@@ -1,4 +1,4 @@
-"""Functions for base conversion"""
+"""Functions for base conversion."""
 
 
 from global_constants import KEY_CHARMAP
@@ -54,7 +54,7 @@ def base10_to_baseN(integer, digits):
 
     for ch in digits:
         if digits.count(ch) != 1:
-            msg = 'all digits must be unique'
+            msg = 'all digits must be distinct'
             raise ValueError(msg)
 
     if integer < 0:
@@ -80,7 +80,7 @@ def baseN_to_base10(baseN, digits):
 
     for ch in digits:
         if digits.count(ch) != 1:
-            msg = 'all digits must be unique'
+            msg = 'all digits must be distinct'
             raise ValueError(msg)
 
     result = 0
