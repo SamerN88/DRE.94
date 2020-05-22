@@ -2,7 +2,7 @@
 
    Author: Samer N. Najjar
    Date launched: 18 October 2019
-   Last update: 21 May 2020
+   Last updated: 21 May 2020
 
    Keyspace size ~ 1.0873661567e+146
 
