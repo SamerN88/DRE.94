@@ -10,15 +10,14 @@ Keyspace size ~ 1.0873661567e+146
 Supports arbitrary input character encoding (output ciphertext strictly ASCII)
 
 ---
-File <code>B94.py</code> contains all cryptographic functionality; other files contain auxiliary tools or global constants.
+File <code>B94.py</code> contains main cryptographic functionality; other files contain auxiliary tools or global constants.
 
 <b>Main file</b>
 
-<code>B94.py</code> has the following functionality:
+<code>B94.py</code> has the following cryptographic functionality:
 * <code>generate_key(seed=None) -> str</code> generates a B94 key, which is a string of length 94, all unique characters, shuffled from the list of ASCII characters 33 to 126 (inclusive). The user can pass a seed to this function that will always generate the same key. The <code>seed</code> parameter defaults to <code>None</code> (NOTE: seedless key-generation is more secure against attacks, but for the purposes of this algorithm, in most cases this is not a real danger and using a seed as a 'passcode' is practical).
 * <code>encrypt(text_source: str, key: str, fromfile: bool=False):</code> encrypts a string with arbitrary character encoding into ASCII ciphertext. The <code>text_source</code> parameter can be the literal text intended for encryption, or the path of a text file which contains the text intended for encryption; if a path/filename is passed, then the <code>fromfile</code> parameter must be set to <code>True</code> otherwise the path/filename will be treated as literal text.
 * <code>decrypt(cipher_source: str, key: str, fromfile: bool=False):</code> decrypts B94 ASCII ciphertext into plaintext with arbitrary character encoding. Like the <code>encrypt</code> function, the <code>cipher_source</code> parameter can be the literal ciphertext intended for decryption, or the path of a text file which contains the ciphertext intended for decryption; if a path/filename is passed, then the <code>fromfile</code> parameter must be set to <code>True</code> otherwise the path/filename will be treated as literal ciphertext.
-* <code>get_base11_digits(key: str) -> list:</code> shuffles the 11 characters <code>0123456789</code> and <code>SPACE</code> using a B94 key as a seed for the shuffle, to create a base-11 numbering system consistent with the key; this is instrumental to B94 encryption. Returns the 11 digits in a list
 
 <b>Ancillary files</b>
 
