@@ -8,16 +8,15 @@
 
    Supports arbitrary input character encoding (output ciphertext strictly ASCII)"""
 
+# TODO: consider how to access all methods from B94.<method> (possibly have central file that imports * from all files)
 
 import random
 import secrets
-import time
 
-from datetime import datetime
 from misc import driver_cwd, arg_check
-from radix import baseN_to_base10, base10_to_baseN, base94_to_base10
-from global_constants import KEY_CHARMAP, KEY_LENGTH, KEYSPACE_SIZE
-from key_fxns import key_error_check, get_keyspace, approx_loc_in_keyspace
+from radix import baseN_to_base10, base10_to_baseN
+from global_constants import KEY_CHARMAP, KEY_LENGTH
+from key_fxns import key_error_check
 
 
 # Generates a string of length 94 with unique characters, using ASCII values 33-126
@@ -48,6 +47,7 @@ def generate_key(seed=None):
 # Encrypts string with arbitrary character encoding into ASCII ciphertext
 def encrypt(text_source, key, fromfile=False):
     arg_check(fromfile, 'fromfile', bool)
+    key_error_check(key)
 
     if fromfile:
         # If filename, get text from file
@@ -95,6 +95,7 @@ def encrypt(text_source, key, fromfile=False):
 # Decrypts ASCII ciphertext into plaintext with arbitrary character encoding
 def decrypt(cipher_source, key, fromfile=False):
     arg_check(fromfile, 'fromfile', bool)
+    key_error_check(key)
 
     # Determine if cipher source is filename or raw cipher
     if fromfile:
@@ -148,6 +149,8 @@ def decrypt(cipher_source, key, fromfile=False):
 
 # Shuffles base-11 digits with key as seed (0 or SPACE must be 0th digit as they can't be first char in base-11 cipher)
 def get_base11_digits(key):
+    key_error_check(key)
+
     # Get zero digit
     zeros = list(' 0')
     random.seed(key)
@@ -161,108 +164,9 @@ def get_base11_digits(key):
     return [zero] + non_zero
 
 
-# Tests reliability of algorithm by checking if decrypted values match original values, for any number of trials
-def reliance_test(trials, verbose=True, super_verbose=False):
-    if super_verbose:
-        verbose = True
-
-    # First try edge cases
-    for text in ['a', 'a'*100, '']:
-        key = generate_key()
-        cipher = encrypt(text, key)
-        dtext = decrypt(cipher, key)
-        if dtext != text:
-            if verbose:
-                print('FAIL')
-            return False
-
-        if super_verbose:
-            print('Key:', key)
-            print('Text:', text)
-            print('Cipher:', cipher)
-            print()
-
-    # Then run random trials (which include non-ASCII values)
-    for i in range(trials):
-        key = generate_key()
-        length = random.randint(0, 500)
-        text = ''.join(chr(random.randint(0, 500)) for i in range(length))
-        cipher = encrypt(text, key)
-        dtext = decrypt(cipher, key)
-        if dtext != text:
-            if verbose:
-                print('FAIL')
-            return False
-
-        if super_verbose:
-            print('Key:', key)
-            print('Text:', text)
-            print('Cipher:', cipher)
-            print()
-
-    if verbose:
-        print('PASS')
-    return True
-
-
-# Function that brute-forces B94; user has the option to specify key used (strictly verbose)
-def brute_force(key=None):
-    if key:
-        key_error_check(key)
-    else:
-        key = generate_key()
-
-    start_datetime = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
-    percentile = approx_loc_in_keyspace(key) * 100
-
-    print('Start brute force:', start_datetime)
-    print('\nKey used:')
-    print(key)
-    print('\nKey number (base-94 key to base-10 integer):')
-    print(base94_to_base10(key))
-    print('\nInteger distance from smallest base-94 key (not absolute location in keyspace):')
-    print(percentile, ' %' if 'e' in str(percentile) else '%', ' (percentile)', sep='')
-
-    # Reset keyspace generator
-    keyspace = get_keyspace()
-
-    # Iterate over keyspace (this is the brute-forcing part)
-    count = 0
-    t1 = time.time()
-    for permutation in keyspace:
-        count += 1
-        if key == ''.join(permutation):
-            break
-
-    elapsed = time.time() - t1
-    end_datetime = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
-
-    # Get percentage of keyspace iterated over
-    percent = (count / KEYSPACE_SIZE) * 100
-
-    # If the printed count is too long, convert to scientific notation
-    if len(str(count)) > KEY_LENGTH:
-        count = '{:.10e}'.format(count)
-
-    # Report
-    print('\n' + '*' * KEY_LENGTH)
-    print('<< B94 BRUTE-FORCE COMPLETE >>'.center(KEY_LENGTH))
-    print('\nTime elapsed:')
-    print(elapsed, 'seconds')
-    print('\nNumber of keys tried:')
-    print(count)
-    print('\nPercentage of keyspace tried:')
-    print(percent, ' %' if 'e' in str(percent) else '%', sep='')
-    print('*' * KEY_LENGTH)
-
-    print('\nEnd brute force:', end_datetime)
-
-
 # Method documentation
 generate_key.__doc__ = "Generates a string of length 94 with unique characters, using ASCII values 33-126"
 encrypt.__doc__ = "Encrypts string with arbitrary character encoding into ASCII ciphertext"
 decrypt.__doc__ = "Decrypts ASCII ciphertext into plaintext with arbitrary character encoding"
 get_base11_digits.__doc__ = "Shuffles base-11 digits (0123456789 + SPACE) with key as seed"
-reliance_test.__doc__ = "Tests reliability of algorithm by checking if decrypted values match original values, " \
-                        "for any number of trials"
-brute_force.__doc__ = "Function that brute-forces B94; user has the option to specify key used (strictly verbose)"
+
