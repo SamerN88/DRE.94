@@ -9,7 +9,7 @@
    Supports arbitrary input character encoding (output ciphertext strictly ASCII)."""
 
 # TODO: update docstrings to describe parameters and return values and their types
-# TODO: consider how to access all methods from B94.<method> (possibly have central file that imports * from all files)
+# TODO: consider how to access all methods from B94.<method>; might have to restructure library
 
 import random
 import secrets
@@ -17,7 +17,7 @@ import secrets
 from misc import driver_cwd, arg_check, shuffle_base11
 from radix import baseN_to_base10, base10_to_baseN
 from global_constants import KEY_CHARMAP, KEY_LENGTH
-from key_fxns import key_error_check
+from key_ops import key_error_check
 
 
 # Generates a string of length 94 with distinct characters, using ASCII values 33-126
@@ -147,7 +147,7 @@ def decrypt(cipher_source, key, fromfile=False):
     # Get text (base-N text) using charset which was derived earlier
     text = base10_to_baseN(base10_cipher, charset)
 
-    # If text was comprised of 1 unique character, it would decrypt to a single character; correct this with length var
+    # If text was comprised of 1 unique char, it would decrypt to a single char; correct this with length var
     if len(text) == 1:
         text *= length
 

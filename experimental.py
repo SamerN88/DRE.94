@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 from B94 import generate_key, encrypt, decrypt
 from global_constants import KEY_LENGTH, KEYSPACE_SIZE
-from key_fxns import get_keyspace, approx_loc_in_keyspace, key_error_check
+from key_ops import get_keyspace, approx_loc_in_keyspace, key_error_check
 from radix import base94_to_base10
 
 

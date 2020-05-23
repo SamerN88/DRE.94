@@ -1,25 +1,26 @@
 """Miscellaneous functions (implicitly used, not very relevant to user)."""
 
+import os
 import traceback
 import random
-from key_fxns import key_error_check
 
 
 # When this function is called, it returns the directory name of the driver file that called the B94 library
 def driver_cwd(filename=None):
+    sep = os.path.join('_', '').lstrip('_')  # returns '\' or '/' depending on operating system
     try:
-        dirpath = '/'.join(traceback.extract_stack()[-3][0].split('/')[:-1])
+        dirpath = sep.join(traceback.extract_stack()[-3][0].split(sep)[:-1])
 
         # For example, if dirpath is built-in ipython console
         if dirpath == '':
-            dirpath = '/'.join(traceback.extract_stack()[-2][0].split('/')[:-1])
+            dirpath = sep.join(traceback.extract_stack()[-2][0].split(sep)[:-1])
 
     except IndexError:
         # IndexError occurs if calling script is inside the B94 library script (unlikely, but worth accounting for)
-        dirpath = '/'.join(traceback.extract_stack()[-1][0].split('/')[:-1])
+        dirpath = sep.join(traceback.extract_stack()[-1][0].split(sep)[:-1])
 
     # optional file arg; returns path to file in the calling directory
-    return dirpath if filename is None else dirpath + '/' + filename
+    return dirpath if filename is None else sep.join([dirpath, filename])
 
 
 # Ciphers can be saved manually in any text format, but this method expedites the saving process
@@ -49,8 +50,6 @@ def arg_check(arg, argname, argtype):
 # Shuffles base-11 digits (0123456789 + SPACE) with key as seed
 def shuffle_base11(key):
     """Shuffles base-11 digits (0123456789 + SPACE) with key as seed."""
-
-    key_error_check(key)
 
     # Get zero digit (0 or SPACE must be 0th digit as they can't be first char in base-11 cipher)
     zeros = list(' 0')
