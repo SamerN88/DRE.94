@@ -1,3 +1,5 @@
+<!-- background: #000000 -->
+<!-- color: #FFFFFF -->
 # B94
 #### <b>BASE-94 ENCRYPTION (B94): Private key text encryption algorithm</b>
 
@@ -5,7 +7,7 @@ Author: Samer N. Najjar<br>
 Date launched: 18 October 2019<br>
 Last updated: 21 May 2020
 
-Keyspace size ~ 1.0873661567e+146
+Keyspace size: 94! (~ 1.0873661567e+146)
 
 Supports arbitrary input character encoding (output ciphertext strictly ASCII)
 
@@ -36,7 +38,7 @@ See <code>global_constants.py</code> for fundamental values:
 * <code>KEY_CHARMAP =</code> first key in keyspace, i.e. smallest base-94 representation (string) of length 94 with distinct characters (equivalent to string of ASCII characters 33 to 126)
 * <code>ASCII =</code> list of ASCII characters 33 to 126
 * <code>KEY_LENGTH = 94</code> (length of any B94 key)
-* <code>KEYSPACE_SIZE =</code> calculated number of possible keys, roughly equal to 1.0873661567×10<sup>146</sup>
+* <code>KEYSPACE_SIZE =</code> calculated number of possible keys, equal to 94! (roughly equal to 1.0873661567×10<sup>146</sup>)
 * <code>KEYSPACE =</code> generator for all possible keys as lists of characters instead of strings; this variable is created upon importing the module, while <code>get_keyspace()</code> creates a new keyspace generator upon call
 
 See <code>experimental.py</code> for functions that test B94's algorithm:
