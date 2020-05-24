@@ -1,10 +1,10 @@
 """BASE-94 ENCRYPTION (B94): Private key text encryption algorithm
 
-   Author: Samer N. Najjar
+   Author: Samer N. Najjar (About me: https://najjarcv.imfast.io/)
    Date launched: 18 October 2019
    Last updated: 21 May 2020
 
-   Keyspace size ~ 1.0873661567e+146
+   Keyspace size: 94! (~ 1.0873661567e+146)
 
    Supports arbitrary input character encoding (output ciphertext strictly ASCII)."""
 

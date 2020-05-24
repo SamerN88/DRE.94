@@ -1,7 +1,7 @@
 # B94
 #### **BASE-94 ENCRYPTION (B94): Private key text encryption algorithm**
 
-Author: Samer N. Najjar<br>
+Author: Samer N. Najjar ([About me](https://najjarcv.imfast.io/))<br>
 Date launched: 18 October 2019<br>
 Last updated: 21 May 2020
 
