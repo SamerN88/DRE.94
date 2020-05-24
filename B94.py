@@ -69,7 +69,7 @@ def encrypt(text_source, key, fromfile=False):
     # Get set of distinct chars in text; to be used as numbering system.
     charset = list(set(text))
 
-    # If first character in text is 0th digit, it will disappear in decryption; swap first and last digits to fix this
+    # If first char in text is 0th symbol, it will disappear in decryption; swap first and last symbols to fix this
     if text[0] == charset[0]:
         zero = charset[0]
         charset[0] = charset[-1]
@@ -81,15 +81,15 @@ def encrypt(text_source, key, fromfile=False):
     # Convert text to base-10 integer using charset (then obstruct)
     base10_cipher = baseN_to_base10(text, charset) ^ obstructor
 
-    # Get shuffled base-11 digits with key as seed
-    base11_digits = shuffle_base11(key)
+    # Get shuffled base-11 symbol set with key as seed
+    base11_symbols = shuffle_base11(key)
 
     # Tag contains info on length of text and ords of charset (lengthens cipher, but necessary for arbitrary charset)
     tag = str(len(text)) + ' ' + ' '.join(str(ord(ch)) for ch in charset)  # tag is in base-11 (0123456789 + SPACE)
 
     # Combine base-11 tag and base-10 cipher, get full base-11 cipher; then convert full base-11 cipher to base-10
     base11_cipher = tag + ' ' + str(base10_cipher)
-    base10_cipher_with_tag = baseN_to_base10(base11_cipher, base11_digits) ^ obstructor  # then obstruct once more
+    base10_cipher_with_tag = baseN_to_base10(base11_cipher, base11_symbols) ^ obstructor  # then obstruct once more
 
     # Finally, convert full base-10 cipher to base-94 with key
     cipher = base10_to_baseN(base10_cipher_with_tag, key)
@@ -121,8 +121,8 @@ def decrypt(cipher_source, key, fromfile=False):
     if cipher == '':
         return ''
 
-    # Get shuffled base-11 digits with key as seed
-    base11_digits = shuffle_base11(key)
+    # Get shuffled base-11 symbol set with key as seed
+    base11_symbols = shuffle_base11(key)
 
     # Get obstructor (cipher was XOR'd with obstructor in encryption)
     obstructor = abs(hash(key))
@@ -131,7 +131,7 @@ def decrypt(cipher_source, key, fromfile=False):
     base10_cipher_with_tag = baseN_to_base10(cipher, key) ^ obstructor
 
     # Convert base-10 cipher to base-11 cipher, i.e. tag and text cipher (also reverse XOR with obstructor)
-    base11_cipher = base10_to_baseN(base10_cipher_with_tag, base11_digits)
+    base11_cipher = base10_to_baseN(base10_cipher_with_tag, base11_symbols)
 
     # Separate tag and base-10 cipher
     base11_cipher_split = base11_cipher.split()

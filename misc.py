@@ -47,17 +47,17 @@ def arg_check(arg, argname, argtype):
         raise TypeError(msg)
 
 
-# Shuffles base-11 digits (0123456789 + SPACE) with key as seed
+# Shuffles base-11 symbol set (0123456789 + SPACE) with key as seed
 def shuffle_base11(key):
-    """Shuffles base-11 digits (0123456789 + SPACE) with key as seed."""
+    """Shuffles base-11 symbol set (0123456789 + SPACE) with key as seed."""
 
-    # Get zero digit (0 or SPACE must be 0th digit as they can't be first char in base-11 cipher)
+    # Get zero symbol (0 or SPACE must be 0th symbol as they can't be first char in base-11 cipher)
     zeros = list(' 0')
     random.seed(key)
     z_index = random.randint(0, 1)
     zero = zeros[z_index]
 
-    # Get list of non-zero digits
+    # Get list of non-zero symbols
     non_zero = list('123456789' + zeros[1 - z_index])
     random.shuffle(non_zero, random.seed(key))
 

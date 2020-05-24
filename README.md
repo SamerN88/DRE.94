@@ -27,10 +27,10 @@ See `key_fxns.py` for functions that operate on a key or relate to keyspace:
 * `get_keyspace() -> generator:` returns a Python generator for all possible B94 keys as lists of characters instead of strings
 
 See `radix.py` for functions that convert between bases:
-* `base10_to_base94(integer: int) -> str:` converts base-10 integer to base-94 string representation, using the first key in the keyspace as the preset numbering system (i.e. digits), which is equivalent to ASCII characters 33 to 126 (94 digits)
+* `base10_to_base94(integer: int) -> str:` converts base-10 integer to base-94 string representation, using the first key in the keyspace as the preset numbering system (i.e. the symbol set), which is equivalent to ASCII characters 33 to 126 (94 symbols)
 * `base94_to_base10(base94: str) -> int:` converts a base-94 string representation (using only ASCII characters 33-126) to base-10 integer
-* `base10_to_baseN(integer: int, digits: iterable) -> str:` converts base-10 integer to arbitrary base-N string representation; `digits` parameter must be populated with distinct characters in an iterable (str, list, tuple, etc.) to act as a numbering system for the arbitrary base
-* `baseN_to_base10(baseN: str, digits: iterable) -> str:` converts arbitrary base-N string representation to base-10 integer; again, `digits` parameter must be populated with distinct characters in an iterable (str, list, tuple, etc.) to act as a numbering system for the arbitrary base
+* `base10_to_baseN(integer: int, symbol_set: iterable) -> str:` converts base-10 integer to arbitrary base-N string representation; `symbol_set` parameter must be populated with distinct characters in an iterable (str, list, tuple, etc.) to act as a numbering system for the arbitrary base
+* `baseN_to_base10(baseN: str, symbol_set: iterable) -> str:` converts arbitrary base-N string representation to base-10 integer; again, `symbol_set` parameter must be populated with distinct characters in an iterable (str, list, tuple, etc.) to act as a numbering system for the arbitrary base
 
 See `global_constants.py` for fundamental values:
 * `KEY_CHARMAP =` first key in keyspace, i.e. smallest base-94 representation (string) of length 94 with distinct characters (equivalent to string of ASCII characters 33 to 126)
