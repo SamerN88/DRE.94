@@ -1,9 +1,9 @@
 # B94
 #### **BASE-94 ENCRYPTION (B94): Private key text encryption algorithm**
 
-Author: Samer N. Najjar ([About me](https://najjarcv.imfast.io/))<br>
-Date launched: 18 October 2019<br>
-Last updated: 21 May 2020
+<u>Author:</u> Samer N. Najjar ([About me](https://najjarcv.imfast.io/))<br>
+<u>Date launched:</u> 18 October 2019<br>
+<u>Last updated:</u> 23 May 2020
 
 Keyspace size: 94! (~ 1.0873661567e+146)
 
@@ -46,7 +46,7 @@ See `experimental.py` for functions that test B94's algorithm:
 Finally, `misc.py` contains implicitly-used functions not relevant to the user, except for:
 * `permute(n: int, r: int) -> int:` returns number of permutations of size `r` from population of size `n`; accurate for arbitrarily large integers, unlike the standard formula `n! / (n-r)!`
 
-**Final note**
+**Limitations**
 
 B94's algorithm is good for encrypting modestly sized strings and text files, roughly under ten thousand characters long. But for text of higher-order size, such as a string of length 50,000 or a 30 KB text file, the algorithm becomes inefficient and encryption is very time-consuming (you can still encrypt such large text without errors, it would just take time). Moreover, the efficiency of the algorithm varies inversely with the diversity of the characters being encrypted; a 5000-character string using only ASCII characters encrypts much faster than a 5000-character string that uses 5000 distinct characters. These are general limitations to keep in mind when encrypting arbitrarily large text.
 
