@@ -1,0 +1,80 @@
+"""Functions that are implicitly called by other modules; not intended for direct use by users."""
+
+
+import os
+import traceback
+import random
+
+from global_constants import KEY_LENGTH, KEY_CHARMAP
+
+
+# When this function is called, it returns the directory name of the driver file that called the B94 library
+def driver_cwd(filename=None):
+    """Returns the path to the directory containing the driver code that initially called the module."""
+
+    sep = os.path.join('_', '').lstrip('_')  # returns '\' or '/' depending on operating system
+    try:
+        dirpath = sep.join(traceback.extract_stack()[-3][0].split(sep)[:-1])
+
+        # For example, if dirpath is built-in ipython console
+        if dirpath == '':
+            dirpath = sep.join(traceback.extract_stack()[-2][0].split(sep)[:-1])
+
+    except IndexError:
+        # IndexError occurs if calling script is inside the B94 library script (unlikely, but worth accounting for)
+        dirpath = sep.join(traceback.extract_stack()[-1][0].split(sep)[:-1])
+
+    # optional file arg; returns path to file in the calling directory
+    return dirpath if filename is None else sep.join([dirpath, filename])
+
+
+# Meant to be called in the beginning of a function definition to check arguments for correct type
+def arg_check(arg, argname, argtype):
+    """Checks if passed argument 'arg' is the correct type 'argtype'."""
+
+    if type(arg) != argtype:
+        msg = f'argument \'{argname}\' must be of type {str(argtype)[8:-2]}, not {str(type(arg))[8:-2]}'
+        raise TypeError(msg)
+
+
+# Shuffles base-11 symbol set (0123456789 + SPACE) with key as seed
+def shuffle_base11(key):
+    """Shuffles base-11 symbol set (0123456789 + SPACE) with B94 key as seed."""
+
+    key_error_check(key)
+
+    # Get zero symbol (0 or SPACE must be 0th symbol as they can't be first char in base-11 cipher)
+    zeros = list(' 0')
+    random.seed(key)
+    z_index = random.randint(0, 1)
+    zero = zeros[z_index]
+
+    # Get list of non-zero symbols
+    non_zero = list('123456789' + zeros[1 - z_index])
+    random.shuffle(non_zero, random.seed(key))
+
+    return [zero] + non_zero
+
+
+def key_error_check(key):
+    """Checks if argument 'key' is a valid B94 key, and raises error with specific reason if not."""
+
+    msg = "input for argument 'key' is not a valid B94 key (reason: {})"
+
+    # Check that key is of type str (if key is represented as list or tuple, problems occur in encryption/decryption)
+    if type(key) != str:
+        raise TypeError(msg.format("B94 key must be represented as a string (type str)"))
+
+    # Check for correct key length
+    if len(key) != KEY_LENGTH:
+        raise ValueError(msg.format(f"B94 key must be of length {KEY_LENGTH}"))
+
+    # Check for character uniqueness
+    for ch in key:
+        if key.count(ch) != 1:
+            raise ValueError(msg.format(f"B94 key must contain only distinct characters"))
+
+    # Check that key uses KEY_CHARMAP characters (ASCII 33 to 126)
+    for ch in key:
+        if ch not in KEY_CHARMAP:
+            raise ValueError(msg.format(f"B94 key must contain only ASCII characters 33 to 126, inclusive"))

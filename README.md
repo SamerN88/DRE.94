@@ -3,9 +3,9 @@
 
 <u>Author:</u> Samer N. Najjar ([About me](https://najjarcv.imfast.io/))<br>
 <u>Date launched:</u> 18 October 2019<br>
-<u>Last updated:</u> 23 May 2020
+<u>Last updated:</u> 27 May 2020
 
-Keyspace size: 94! (~ 1.0873661567e+146)
+Keyspace size: 94! (~ 1.0873661567×10<sup>146</sup>)
 
 Supports arbitrary input character encoding (output ciphertext strictly ASCII)
 
@@ -21,7 +21,7 @@ File `B94.py` contains main cryptographic functionality; other files contain aux
 
 **Ancillary files**
 
-See `key_fxns.py` for functions that operate on a key or relate to keyspace:
+See `key_ops.py` for functions that operate on a key or relate to keyspace:
 * `is_key(key: str) -> bool:` checks if a string is a valid B94 key; returns `True` or `False`
 * `approx_loc_in_keyspace(key: str) -> float:` returns a value between 0 and 1 (inclusive) indicating approximate location of key in keyspace, i.e. the integer distance from the smallest base-94 key (not absolute location in keyspace)
 * `get_keyspace() -> generator:` returns a Python generator for all possible B94 keys as lists of characters instead of strings
@@ -43,12 +43,15 @@ See `experimental.py` for functions that test B94's algorithm:
 * `reliance_test(trials: int, verbose: bool=True, super_verbose: bool=False): -> bool` tests reliability of algorithm by checking if decrypted values match original values using random keys, for any number of trials. Verbose mode prints PASS or FAIL, super-verbose mode prints the key, original text, and ciphertext for every trial. Returns `True` or `False`
 * `brute_force(key=None) -> None:` brute-forces B94. User has the option to specify a key to be used in brute-forcing; `key` parameter defaults to `None` (in which case a random key is generated upon call). This function is strictly verbose and prints a report upon successful brute-forcing (NOTE: on normal computers, this will likely take forever).
 
-Finally, `misc.py` contains implicitly-used functions not relevant to the user, except for:
+See `misc.py` for these miscellaneous functions:
+* `save(string: str, file: str) -> None:` an easy-to-use method for saving ciphers, keys, or any text to a text file. The user specifies the path/filename to which the given string will be saved as text (file could be pre-existing or new). Simply more efficient than manually saving text into a text file.
 * `permute(n: int, r: int) -> int:` returns number of permutations of size `r` from population of size `n`; accurate for arbitrarily large integers, unlike the standard formula `n! / (n-r)!`
+
+Finally, `implicit.py` contains functionality that is used implicitly throughout the library; this is not intended for direct use by users. See function definitions inside the file for documentation.
 
 **Limitations**
 
-B94's algorithm is good for encrypting modestly sized strings and text files, roughly under ten thousand characters long. But for text of higher-order size, such as a string of length 50,000 or a 30 KB text file, the algorithm becomes inefficient and encryption is very time-consuming (you can still encrypt such large text without errors, it would just take time). Moreover, the efficiency of the algorithm varies inversely with the diversity of the characters being encrypted; a 5000-character string using only ASCII characters encrypts much faster than a 5000-character string that uses 5000 distinct characters. These are general limitations to keep in mind when encrypting arbitrarily large text.
+B94's algorithm is good for encrypting modestly sized strings and text files, roughly under ten thousand characters long. But for text of higher-order size, such as a string of length 50,000 or a 30 KB text file, the algorithm becomes inefficient and encryption is time-consuming (you can still encrypt such large text without errors, it would just take time). Moreover, the efficiency of the algorithm varies inversely with the diversity of the characters being encrypted; a 5000-character string containing only ASCII characters encrypts much faster than a 5000-character string containing 5000 distinct characters. These are general limitations to keep in mind when encrypting arbitrarily large text.
 
 ---
 <small>© 2020 Najjar, Inc. All Rights Reserved.</small>

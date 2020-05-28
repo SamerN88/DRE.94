@@ -2,7 +2,7 @@
 
    Author: Samer N. Najjar (About me: https://najjarcv.imfast.io/)
    Date launched: 18 October 2019
-   Last updated: 21 May 2020
+   Last updated: 27 May 2020
 
    Keyspace size: 94! (~ 1.0873661567e+146)
 
@@ -14,10 +14,9 @@
 import random
 import secrets
 
-from misc import driver_cwd, arg_check, shuffle_base11
+from implicit import driver_cwd, arg_check, shuffle_base11, key_error_check
 from radix import baseN_to_base10, base10_to_baseN
 from global_constants import KEY_CHARMAP, KEY_LENGTH
-from key_ops import key_error_check
 
 
 # Generates a string of length 94 with distinct characters, using ASCII values 33-126

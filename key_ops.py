@@ -3,13 +3,15 @@
 import itertools
 from global_constants import KEY_LENGTH, KEY_CHARMAP
 from radix import base94_to_base10
-from misc import arg_check
+from implicit import key_error_check
 
 
 def is_key(key):
-    """Checks if a string is a valid B94 key; returns True or False."""
+    """Checks if a string is a valid B94 key (will not accept any other iterable besides str); returns True or False."""
 
-    arg_check(key, 'key', str)
+    # Check that key is of type str (if key is represented as list or tuple, problems occur in encryption/decryption)
+    if type(key) != str:
+        return False
 
     # Check for correct key length
     if len(key) != KEY_LENGTH:
@@ -26,12 +28,6 @@ def is_key(key):
             return False
 
     return True
-
-
-def key_error_check(key):
-    if is_key(key) is False:
-        msg = f"input for argument 'key' is not a valid B94 key: {key}"
-        raise ValueError(msg)
 
 
 def approx_loc_in_keyspace(key):

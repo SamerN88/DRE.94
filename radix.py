@@ -6,6 +6,8 @@ from global_constants import KEY_CHARMAP
 
 # Converts base-10 integer to base-94 representation with KEY_CHARMAP as fixed numbering system
 def base10_to_base94(integer: int) -> str:
+    """Converts base-10 integer to base-94 string representation, using ASCII characters 33 to 126 as symbol set."""
+
     symbol_set = KEY_CHARMAP
     base = 94
 
@@ -27,6 +29,8 @@ def base10_to_base94(integer: int) -> str:
 
 # Converts base-94 representation to base-10 integer; only takes string whose characters exist in KEY_CHARMAP
 def base94_to_base10(base94: str) -> int:
+    """Converts base-94 string representation to base-10 integer, using ASCII characters 33 to 126 as symbol set."""
+
     result = 0
     length = len(base94)
 
@@ -49,6 +53,8 @@ def base94_to_base10(base94: str) -> int:
 
 # Converts base-10 integer to base-N representation; supports arbitrary numbering system
 def base10_to_baseN(integer, symbol_set):
+    """Converts base-10 integer to arbitrary base-N string representation; user specifies symbol set (of length N)."""
+
     symbol_set = list(symbol_set)
     base = len(symbol_set)
 
@@ -75,6 +81,8 @@ def base10_to_baseN(integer, symbol_set):
 
 # Converts base-N representation to base-10 integer; supports arbitrary numbering system
 def baseN_to_base10(baseN, symbol_set):
+    """Converts arbitrary base-N string representation to base-10 integer; user specifies symbol set (of length N)."""
+
     symbol_set = list(symbol_set)
     N = len(symbol_set)  # N is old base
 
