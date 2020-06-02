@@ -53,5 +53,10 @@ Finally, `implicit.py` contains functionality that is used implicitly throughout
 
 B94's algorithm is good for encrypting modestly sized strings and text files, roughly under ten thousand characters long. But for text of higher-order size, such as a string of length 50,000 or a 30 KB text file, the algorithm becomes inefficient and encryption is time-consuming (you can still encrypt such large text without errors, it would just take time). Moreover, the efficiency of the algorithm varies inversely with the diversity of the characters being encrypted; a 5000-character string containing only ASCII characters encrypts much faster than a 5000-character string containing 5000 distinct characters. These are general limitations to keep in mind when encrypting arbitrarily large text.
 
+
+**Author's note**
+
+The security of B94 has not been extensively tested—you are welcome to challenge my algorithm! If you break the algorithm or find any bugs, please let me know by opening an issue on Github or emailing me at [s.najjar612@gmail.com]().
+
 ---
 <small>© 2020 Najjar, Inc. All Rights Reserved.</small>

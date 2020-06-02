@@ -8,6 +8,8 @@
 
    Supports arbitrary input character encoding (output ciphertext strictly ASCII)."""
 
+# TODO: change order of base-11 cipher elements: cipher first, then tag
+# TODO: fix bug where encryption is not consistent for same seed
 # TODO: update docstrings to describe parameters and return values and their types
 # TODO: consider how to access all methods from B94.<method>; might have to restructure library
 

@@ -33,7 +33,7 @@ def arg_check(arg, argname, argtype):
     """Checks if passed argument 'arg' is the correct type 'argtype'."""
 
     if type(arg) != argtype:
-        msg = f'argument \'{argname}\' must be of type {str(argtype)[8:-2]}, not {str(type(arg))[8:-2]}'
+        msg = f'argument \'{argname}\' must be of type {argtype.__name__}, not {type(arg).__name__}'
         raise TypeError(msg)
 
 
