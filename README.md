@@ -10,7 +10,7 @@ Keyspace size: 94! (~ 1.0873661567×10<sup>146</sup>)
 Supports arbitrary input character encoding (output ciphertext strictly ASCII)
 
 ---
-File `B94.py` contains main cryptographic functionality; other files contain auxiliary tools or global constants.
+File `B94.py` contains main cryptographic functionality; other files contain necessary supplemental code or extra tools.
 
 **Main file**
 
@@ -39,19 +39,21 @@ See `global_constants.py` for fundamental values:
 * `KEYSPACE_SIZE =` calculated number of possible keys, equal to 94! (roughly equal to 1.0873661567×10<sup>146</sup>)
 * `KEYSPACE =` generator for all possible keys as lists of characters instead of strings; this variable is created upon importing the module, while `get_keyspace()` creates a new keyspace generator upon call
 
-See `experimental.py` for functions that test B94's algorithm:
-* `reliance_test(trials: int, verbose: bool=True, super_verbose: bool=False): -> bool` tests reliability of algorithm by checking if decrypted values match original values using random keys, for any number of trials. Verbose mode prints PASS or FAIL, super-verbose mode prints the key, original text, and ciphertext for every trial. Returns `True` or `False`
-* `brute_force(key=None) -> None:` brute-forces B94. User has the option to specify a key to be used in brute-forcing; `key` parameter defaults to `None` (in which case a random key is generated upon call). This function is strictly verbose and prints a report upon successful brute-forcing (NOTE: on normal computers, this will likely take forever).
-
-See `tabular.py` for tabular cryptography:
-* `encrypt_tabular_data(data_source, key: str, cols: tuple=(0, None), rows: tuple=(0, None), save_as=None, inplace: bool=False):` encrypts tabular data (such as a CSV or Excel file) using a B94 key. For the first argument `data_source`, the user can pass a path/filename as a string and that file will be automatically loaded as a Pandas DataFrame and encrypted (currently, only CSV and Excel file types are supported). Alternatively, the user can directly pass a Pandas DataFrame; the function can tell the difference. The user can specify the portion of the data to encrypt using the keyword arguments `cols` and `rows`, which take a tuple (or list) with 2 integers, which are the start and end indexes of the tabular portion. For example, `cols=(1,3)` and `rows=(0,5)` will encrypt only the cells within columns 1 to 3 and rows 0 to 5, inclusive. If these bounds are not specified, the entire table is encrypted by default. The optional `save_as` argument takes a path/filename as a string, and the encrypted tabular data will be saved to that file (again, only CSV and Excel file types are supported). The optional `inplace` argument is used when passing a Pandas DataFrame; if set to `True`, the encrypted DataFrame will overwrite the original DataFrame. The default value is `False`.
-* `decrypt_tabular_data(data_source, key: str, cols: tuple=(0, None), rows: tuple=(0, None), save_as=None, inplace: bool=False):` decrypts tabular data (such as a CSV or Excel file) using a B94 key. Takes the same parameters as `encrypt_tabular_data`; while `encrypt_tabular_data` loads original data and saves/returns encrypted data, `decrypt_tabular_data` loads encrypted data and saves/returns decrypted data.
-
 See `misc.py` for these miscellaneous functions:
 * `save(string: str, file: str) -> None:` an easy-to-use method for saving ciphers, keys, or any text to a text file. The user specifies the path/filename to which the given string will be saved as text (file could be pre-existing or new). Simply more efficient than manually saving text into a text file.
 * `permute(n: int, r: int) -> int:` returns number of permutations of size `r` from population of size `n`; accurate for arbitrarily large integers, unlike the standard formula `n! / (n-r)!`
 
 Finally, `implicit.py` contains functionality that is used implicitly throughout the library; this is not intended for direct use by users. See function definitions inside the file for documentation.
+
+**Useful tools**
+
+See `experimental.py` for functions that test B94's algorithm:
+* `reliance_test(trials: int, verbose: bool=True, super_verbose: bool=False): -> bool` tests reliability of the algorithm by checking if decrypted values match original values using random keys, for any number of trials. Verbose mode prints PASS or FAIL, super-verbose mode prints the key, original text, and ciphertext for every trial. Returns `True` or `False`
+* `brute_force(key=None) -> None:` brute-forces B94. User has the option to specify a key to be used in brute-forcing; `key` parameter defaults to `None` (in which case a random key is generated upon call). This function is strictly verbose and prints a report upon successful brute-forcing (NOTE: on normal computers, this will likely take forever).
+
+See `tabular.py` for tabular cryptography:
+* `encrypt_tabular_data(data_source, key: str, cols: tuple=(0, None), rows: tuple=(0, None), save_as=None, inplace: bool=False):` encrypts tabular data (such as a CSV or Excel file) using a B94 key. For the first argument `data_source`, the user can pass a path/filename as a string and that file will be automatically loaded as a Pandas DataFrame and encrypted (currently, only CSV and Excel file types are supported). Alternatively, the user can directly pass a Pandas DataFrame; the function can tell the difference. The user can specify the portion of the data to encrypt using the keyword arguments `cols` and `rows`, which take a tuple (or list) with 2 integers, which are the start and end indexes of the tabular portion. For example, `cols=(1,3)` and `rows=(0,5)` will encrypt only the cells within columns 1 to 3 and rows 0 to 5, inclusive. If these bounds are not specified, the entire table is encrypted by default. The optional `save_as` argument takes a path/filename as a string, and the encrypted tabular data will be saved to that file (again, only CSV and Excel file types are supported). The optional `inplace` argument is used when passing a Pandas DataFrame; if set to `True`, the encrypted DataFrame will overwrite the original DataFrame. The default value is `False`. The function always returns the encrypted DataFrame.
+* `decrypt_tabular_data(data_source, key: str, cols: tuple=(0, None), rows: tuple=(0, None), save_as=None, inplace: bool=False):` decrypts tabular data (such as a CSV or Excel file) using a B94 key. Takes the same parameters as `encrypt_tabular_data`; while `encrypt_tabular_data` loads original data and saves/returns encrypted data, `decrypt_tabular_data` loads encrypted data and saves/returns decrypted data. The function always returns the decrypted DataFrame.
 
 **Limitations**
 
