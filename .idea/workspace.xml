@@ -42,7 +42,7 @@
           <entry key="dummy" value="19" />
           <entry key="gitignore" value="16" />
           <entry key="html" value="14" />
-          <entry key="md" value="11873" />
+          <entry key="md" value="12156" />
           <entry key="py" value="15112" />
           <entry key="txt" value="4" />
         </counts>
@@ -50,7 +50,7 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="14" />
-          <entry key="Markdown" value="11873" />
+          <entry key="Markdown" value="12156" />
           <entry key="PLAIN_TEXT" value="39" />
           <entry key="Python" value="25275" />
         </counts>
@@ -66,8 +66,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="128">
-                <caret line="52" column="60" lean-forward="true" selection-start-line="52" selection-start-column="60" selection-end-line="52" selection-end-column="60" />
+              <first_editor relative-caret-position="364">
+                <caret line="52" column="786" selection-start-line="52" selection-start-column="786" selection-end-line="52" selection-end-column="786" />
               </first_editor>
               <second_editor />
             </state>
@@ -170,8 +170,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>True or</find>
-      <find>True</find>
       <find>randomize</find>
       <find>CHARMAP</find>
       <find>name of</find>
@@ -200,6 +198,8 @@
       <find>filename/path</find>
       <find>filename/</find>
       <find>stop_after</find>
+      <find>but can be switch</find>
+      <find>the user</find>
     </findStrings>
     <replaceStrings>
       <replace>**</replace>
@@ -227,8 +227,8 @@
         <option value="$PROJECT_DIR$/encrypt_tabular_data.py" />
         <option value="$PROJECT_DIR$/implicit.py" />
         <option value="$PROJECT_DIR$/experimental.py" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/tabular.py" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -348,7 +348,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.43909347" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.26203966" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.3286119" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.4858357" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -485,8 +485,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="128">
-            <caret line="52" column="60" lean-forward="true" selection-start-line="52" selection-start-column="60" selection-end-line="52" selection-end-column="60" />
+          <first_editor relative-caret-position="364">
+            <caret line="52" column="786" selection-start-line="52" selection-start-column="786" selection-end-line="52" selection-end-column="786" />
           </first_editor>
           <second_editor />
         </state>
