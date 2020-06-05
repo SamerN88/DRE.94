@@ -1,10 +1,8 @@
 import pandas as pd
 
-from B94 import generate_key, encrypt, decrypt
+from B94 import encrypt, decrypt
 from implicit import key_error_check, arg_check
 
-
-# TODO: write decrypt_tabular_data
 
 # Currently only supports CSV and Excel files
 def encrypt_tabular_data(data_source, key, cols=(0, None), rows=(0, None), save_as=None, inplace=False):

@@ -2,6 +2,7 @@
   <dictionary name="samernajjar">
     <words>
       <w>argname</w>
+      <w>argtypes</w>
       <w>charmap</w>
       <w>ciphertext</w>
       <w>dataframe</w>
@@ -13,6 +14,7 @@
       <w>passcode</w>
       <w>samer</w>
       <w>savefile</w>
+      <w>vprint</w>
     </words>
   </dictionary>
 </component>

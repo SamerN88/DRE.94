@@ -29,11 +29,16 @@ def driver_cwd(filename=None):
 
 
 # Meant to be called in the beginning of a function definition to check arguments for correct type
-def arg_check(arg, argname, argtype):
+def arg_check(arg, argname, argtypes):
     """Checks if passed argument 'arg' is the correct type 'argtype'."""
 
-    if type(arg) != argtype:
-        msg = f'argument \'{argname}\' must be of type {argtype.__name__}, not {type(arg).__name__}'
+    if type(argtypes) == type:
+        argtypes = [argtypes]
+
+    type_names = [typ.__name__ for typ in argtypes]
+
+    if type(arg) not in argtypes:
+        msg = f'argument \'{argname}\' must be of type {" or ".join(type_names)}, not {type(arg).__name__}'
         raise TypeError(msg)
 
 
