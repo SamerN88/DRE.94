@@ -1,13 +1,13 @@
 # B94
-#### **BASE-94 ENCRYPTION (B94): Private key text encryption algorithm**
+#### **BASE-94 ENCRYPTION: Private key text encryption algorithm**
 
 <u>Author:</u> Samer N. Najjar ([About me](https://najjarcv.imfast.io/))<br>
 <u>Date launched:</u> 18 October 2019<br>
-<u>Last updated:</u> 27 May 2020
+<u>Last updated:</u> 4 June 2020
 
 Keyspace size: 94! (~ 1.0873661567×10<sup>146</sup>)
 
-Supports arbitrary input character encoding (output ciphertext strictly ASCII)
+Supports arbitrary input character encoding (output ciphertext strictly ASCII).
 
 ---
 File `B94.py` contains main cryptographic functionality; other files contain necessary supplemental code or extra tools.

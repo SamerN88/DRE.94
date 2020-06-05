@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fc1ae27b-93f0-4dfa-a172-41e023e1ee97" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-    </list>
+    <list default="true" id="fc1ae27b-93f0-4dfa-a172-41e023e1ee97" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,17 +42,17 @@
           <entry key="dummy" value="19" />
           <entry key="gitignore" value="16" />
           <entry key="html" value="14" />
-          <entry key="md" value="12595" />
-          <entry key="py" value="15112" />
+          <entry key="md" value="12598" />
+          <entry key="py" value="15237" />
           <entry key="txt" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="14" />
-          <entry key="Markdown" value="12595" />
+          <entry key="Markdown" value="12598" />
           <entry key="PLAIN_TEXT" value="39" />
-          <entry key="Python" value="25275" />
+          <entry key="Python" value="25400" />
         </counts>
       </usages-collector>
     </session>
@@ -68,8 +66,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="203">
-                <caret line="52" column="1130" selection-start-line="52" selection-start-column="1130" selection-end-line="52" selection-end-column="1130" />
+              <first_editor relative-caret-position="180">
+                <caret line="52" column="1201" selection-start-line="52" selection-start-column="1201" selection-end-line="52" selection-end-column="1201" />
               </first_editor>
               <second_editor />
             </state>
@@ -79,10 +77,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/B94.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1650">
-              <caret line="10" selection-start-line="10" selection-end-line="10" selection-end-column="71" />
+            <state relative-caret-position="127">
+              <caret line="10" column="95" selection-start-line="10" selection-start-column="95" selection-end-line="10" selection-end-column="95" />
               <folding>
-                <element signature="e#511#524#0" expanded="true" />
+                <element signature="e#695#708#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -225,12 +223,12 @@
         <option value="$PROJECT_DIR$/misc.py" />
         <option value="$PROJECT_DIR$/radix.py" />
         <option value="$PROJECT_DIR$/test.html" />
-        <option value="$PROJECT_DIR$/B94.py" />
         <option value="$PROJECT_DIR$/encrypt_tabular_data.py" />
         <option value="$PROJECT_DIR$/implicit.py" />
         <option value="$PROJECT_DIR$/experimental.py" />
         <option value="$PROJECT_DIR$/tabular.py" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/B94.py" />
       </list>
     </option>
   </component>
@@ -338,7 +336,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="2" y="45" width="1438" height="798" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4975" visible="true" weight="0.1686662" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -477,10 +474,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/B94.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1650">
-          <caret line="10" selection-start-line="10" selection-end-line="10" selection-end-column="71" />
+        <state relative-caret-position="127">
+          <caret line="10" column="95" selection-start-line="10" selection-start-column="95" selection-end-line="10" selection-end-column="95" />
           <folding>
-            <element signature="e#511#524#0" expanded="true" />
+            <element signature="e#695#708#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -488,8 +485,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="203">
-            <caret line="52" column="1130" selection-start-line="52" selection-start-column="1130" selection-end-line="52" selection-end-column="1130" />
+          <first_editor relative-caret-position="180">
+            <caret line="52" column="1201" selection-start-line="52" selection-start-column="1201" selection-end-line="52" selection-end-column="1201" />
           </first_editor>
           <second_editor />
         </state>
