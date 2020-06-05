@@ -42,7 +42,7 @@
           <entry key="dummy" value="19" />
           <entry key="gitignore" value="16" />
           <entry key="html" value="14" />
-          <entry key="md" value="12156" />
+          <entry key="md" value="12268" />
           <entry key="py" value="15112" />
           <entry key="txt" value="4" />
         </counts>
@@ -50,7 +50,7 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="14" />
-          <entry key="Markdown" value="12156" />
+          <entry key="Markdown" value="12268" />
           <entry key="PLAIN_TEXT" value="39" />
           <entry key="Python" value="25275" />
         </counts>
@@ -66,8 +66,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="364">
-                <caret line="52" column="786" selection-start-line="52" selection-start-column="786" selection-end-line="52" selection-end-column="786" />
+              <first_editor relative-caret-position="126">
+                <caret line="51" column="215" selection-start-line="51" selection-start-column="215" selection-end-line="51" selection-end-column="215" />
               </first_editor>
               <second_editor />
             </state>
@@ -485,8 +485,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="364">
-            <caret line="52" column="786" selection-start-line="52" selection-start-column="786" selection-end-line="52" selection-end-column="786" />
+          <first_editor relative-caret-position="126">
+            <caret line="51" column="215" selection-start-line="51" selection-start-column="215" selection-end-line="51" selection-end-column="215" />
           </first_editor>
           <second_editor />
         </state>
