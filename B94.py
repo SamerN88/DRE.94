@@ -8,6 +8,7 @@
 
    Supports arbitrary input character encoding (output ciphertext strictly ASCII)."""
 
+# TODO: consider how to utilize PYTHONHASHSEED for time-limited encryption, or fixed encryption
 # TODO: change order of base-11 cipher elements: cipher first, then tag
 # TODO: fix bug where encryption is not consistent for same seed
 # TODO: update docstrings to describe parameters and return values and their types

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fc1ae27b-93f0-4dfa-a172-41e023e1ee97" name="Default Changelist" comment="" />
+    <list default="true" id="fc1ae27b-93f0-4dfa-a172-41e023e1ee97" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +44,7 @@
           <entry key="dummy" value="19" />
           <entry key="gitignore" value="16" />
           <entry key="html" value="14" />
-          <entry key="md" value="12268" />
+          <entry key="md" value="12595" />
           <entry key="py" value="15112" />
           <entry key="txt" value="4" />
         </counts>
@@ -50,7 +52,7 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="14" />
-          <entry key="Markdown" value="12268" />
+          <entry key="Markdown" value="12595" />
           <entry key="PLAIN_TEXT" value="39" />
           <entry key="Python" value="25275" />
         </counts>
@@ -66,8 +68,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="126">
-                <caret line="51" column="215" selection-start-line="51" selection-start-column="215" selection-end-line="51" selection-end-column="215" />
+              <first_editor relative-caret-position="203">
+                <caret line="52" column="1130" selection-start-line="52" selection-start-column="1130" selection-end-line="52" selection-end-column="1130" />
               </first_editor>
               <second_editor />
             </state>
@@ -170,7 +172,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>randomize</find>
       <find>CHARMAP</find>
       <find>name of</find>
       <find>filename</find>
@@ -200,6 +201,7 @@
       <find>stop_after</find>
       <find>but can be switch</find>
       <find>the user</find>
+      <find>find</find>
     </findStrings>
     <replaceStrings>
       <replace>**</replace>
@@ -336,6 +338,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="2" y="45" width="1438" height="798" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4975" visible="true" weight="0.1686662" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -348,7 +351,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.26203966" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.3937677" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.3286119" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.4858357" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -485,8 +488,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="126">
-            <caret line="51" column="215" selection-start-line="51" selection-start-column="215" selection-end-line="51" selection-end-column="215" />
+          <first_editor relative-caret-position="203">
+            <caret line="52" column="1130" selection-start-line="52" selection-start-column="1130" selection-end-line="52" selection-end-column="1130" />
           </first_editor>
           <second_editor />
         </state>
