@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fc1ae27b-93f0-4dfa-a172-41e023e1ee97" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/samernajjar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/samernajjar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experimental.py" beforeDir="false" afterPath="$PROJECT_DIR$/experimental.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implicit.py" beforeDir="false" afterPath="$PROJECT_DIR$/implicit.py" afterDir="false" />
-    </list>
+    <list default="true" id="fc1ae27b-93f0-4dfa-a172-41e023e1ee97" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,11 +38,11 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="10161" />
+          <entry key="Python Console" value="10163" />
           <entry key="dummy" value="19" />
           <entry key="gitignore" value="16" />
           <entry key="html" value="14" />
-          <entry key="md" value="11096" />
+          <entry key="md" value="11873" />
           <entry key="py" value="15112" />
           <entry key="txt" value="4" />
         </counts>
@@ -55,9 +50,9 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="14" />
-          <entry key="Markdown" value="11096" />
+          <entry key="Markdown" value="11873" />
           <entry key="PLAIN_TEXT" value="39" />
-          <entry key="Python" value="25273" />
+          <entry key="Python" value="25275" />
         </counts>
       </usages-collector>
     </session>
@@ -71,8 +66,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="193">
-                <caret line="51" column="771" selection-start-line="51" selection-start-column="771" selection-end-line="51" selection-end-column="771" />
+              <first_editor relative-caret-position="128">
+                <caret line="52" column="60" lean-forward="true" selection-start-line="52" selection-start-column="60" selection-end-line="52" selection-end-column="60" />
               </first_editor>
               <second_editor />
             </state>
@@ -94,11 +89,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tabular.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="499">
-              <caret line="132" lean-forward="true" selection-start-line="132" selection-end-line="132" />
+            <state relative-caret-position="95">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
-                <marker date="1591134059158" expanded="true" signature="1615:4055" ph="..." />
+                <marker date="1591320366488" expanded="true" signature="1565:4005" ph="..." />
               </folding>
             </state>
           </provider>
@@ -107,12 +102,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/experimental.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="64" column="40" lean-forward="true" selection-start-line="64" selection-start-column="40" selection-end-line="64" selection-end-column="40" />
+            <state relative-caret-position="1178">
+              <caret line="62" column="34" selection-start-line="62" selection-start-column="34" selection-end-line="62" selection-end-column="34" />
               <folding>
                 <element signature="e#45#58#0" expanded="true" />
-                <marker date="1591318422354" expanded="true" signature="932:943" ph="..." />
-                <marker date="1591318422354" expanded="true" signature="4905:6759" ph="..." />
+                <marker date="1591320262116" expanded="true" signature="932:943" ph="..." />
+                <marker date="1591320262116" expanded="true" signature="4905:6759" ph="..." />
               </folding>
             </state>
           </provider>
@@ -133,7 +128,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/implicit.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
+            <state relative-caret-position="741">
               <caret line="39" column="33" lean-forward="true" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
               <folding>
                 <element signature="e#101#110#0" expanded="true" />
@@ -145,7 +140,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/radix.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="820">
+            <state relative-caret-position="1653">
               <caret line="87" selection-start-line="87" selection-end-line="87" />
             </state>
           </provider>
@@ -175,7 +170,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>True or F</find>
       <find>True or</find>
       <find>True</find>
       <find>randomize</find>
@@ -205,6 +199,7 @@
       <find>iterable</find>
       <find>filename/path</find>
       <find>filename/</find>
+      <find>stop_after</find>
     </findStrings>
     <replaceStrings>
       <replace>**</replace>
@@ -230,10 +225,10 @@
         <option value="$PROJECT_DIR$/test.html" />
         <option value="$PROJECT_DIR$/B94.py" />
         <option value="$PROJECT_DIR$/encrypt_tabular_data.py" />
-        <option value="$PROJECT_DIR$/tabular.py" />
         <option value="$PROJECT_DIR$/implicit.py" />
         <option value="$PROJECT_DIR$/experimental.py" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/tabular.py" />
       </list>
     </option>
   </component>
@@ -341,7 +336,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="2" y="45" width="1438" height="798" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4975" visible="true" weight="0.1686662" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -354,9 +348,9 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3201133" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.43909347" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.3286119" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.23512748" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.4858357" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -396,23 +390,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/global_constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="13" column="81" selection-start-line="13" selection-start-column="81" selection-end-line="13" selection-end-column="81" />
-          <folding>
-            <element signature="e#52#68#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/radix.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="820">
-          <caret line="87" selection-start-line="87" selection-end-line="87" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test.csv">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -435,12 +412,62 @@
     <entry file="file://$PROJECT_DIR$/ENC.csv">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/global_constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="13" column="81" selection-start-line="13" selection-start-column="81" selection-end-line="13" selection-end-column="81" />
+          <folding>
+            <element signature="e#52#68#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/radix.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1653">
+          <caret line="87" selection-start-line="87" selection-end-line="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/implicit.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="741">
+          <caret line="39" column="33" lean-forward="true" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
+          <folding>
+            <element signature="e#101#110#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/key_ops.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="247">
           <caret line="13" column="20" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
           <folding>
             <element signature="e#62#78#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/experimental.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1178">
+          <caret line="62" column="34" selection-start-line="62" selection-start-column="34" selection-end-line="62" selection-end-column="34" />
+          <folding>
+            <element signature="e#45#58#0" expanded="true" />
+            <marker date="1591320262116" expanded="true" signature="932:943" ph="..." />
+            <marker date="1591320262116" expanded="true" signature="4905:6759" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tabular.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <marker date="1591320366488" expanded="true" signature="1565:4005" ph="..." />
           </folding>
         </state>
       </provider>
@@ -455,44 +482,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/implicit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="39" column="33" lean-forward="true" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
-          <folding>
-            <element signature="e#101#110#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tabular.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="499">
-          <caret line="132" lean-forward="true" selection-start-line="132" selection-end-line="132" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <marker date="1591134059158" expanded="true" signature="1615:4055" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/experimental.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="64" column="40" lean-forward="true" selection-start-line="64" selection-start-column="40" selection-end-line="64" selection-end-column="40" />
-          <folding>
-            <element signature="e#45#58#0" expanded="true" />
-            <marker date="1591318422354" expanded="true" signature="932:943" ph="..." />
-            <marker date="1591318422354" expanded="true" signature="4905:6759" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="193">
-            <caret line="51" column="771" selection-start-line="51" selection-start-column="771" selection-end-line="51" selection-end-column="771" />
+          <first_editor relative-caret-position="128">
+            <caret line="52" column="60" lean-forward="true" selection-start-line="52" selection-start-column="60" selection-end-line="52" selection-end-column="60" />
           </first_editor>
           <second_editor />
         </state>
