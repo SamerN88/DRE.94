@@ -141,8 +141,8 @@ def brute_force(key=None, time_limit=None, verbose=True):
 
 # Unlike brute_force, which iterates over the keyspace successively, collision_test randomly tests keys
 def collision_test(key=None, time_limit=None, verbose=True):
-    """Randomly generates keys until one equals a random fixed key; user has the option to pass a fixed key.
-    This function is verbose by default (verbose mode can be switched off)."""
+    """Randomly generates keys until one equals a random fixed key (essentially a Bogosort);
+    user has the option to pass a fixed key. This function is verbose by default (verbose mode can be switched off)."""
 
     if key is None:
         key = generate_key()

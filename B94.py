@@ -8,7 +8,7 @@
 
    Supports arbitrary input character encoding (output ciphertext strictly ASCII)."""
 
-# TODO: consider how to utilize PYTHONHASHSEED for time-limited encryption, or fixed encryption
+# TODO: add option where decryption will only work in the next 24 hours
 # TODO: change order of base-11 cipher elements: cipher first, then tag
 # TODO: fix bug where encryption is not consistent for same seed
 # TODO: update docstrings to describe parameters and return values and their types
@@ -17,7 +17,7 @@
 import random
 import secrets
 
-from implicit import driver_cwd, arg_check, shuffle_base11, key_error_check
+from implicit import driver_cwd, arg_check, shuffle_base11, key_error_check, get_obstructor
 from radix import baseN_to_base10, base10_to_baseN
 from global_constants import KEY_CHARMAP, KEY_LENGTH
 
@@ -78,7 +78,7 @@ def encrypt(text_source, key, fromfile=False):
         charset[-1] = zero
 
     # Cipher is XOR'd with obstructor so equivalent ciphers with different keys can't be compared for 1:1 matching chars
-    obstructor = abs(hash(key))
+    obstructor = get_obstructor(key)
 
     # Convert text to base-10 integer using charset (then obstruct)
     base10_cipher = baseN_to_base10(text, charset) ^ obstructor
@@ -127,7 +127,7 @@ def decrypt(cipher_source, key, fromfile=False):
     base11_symbols = shuffle_base11(key)
 
     # Get obstructor (cipher was XOR'd with obstructor in encryption)
-    obstructor = abs(hash(key))
+    obstructor = get_obstructor(key)
 
     # Convert base-94 cipher to base-10 integer using key, then un-obstruct
     base10_cipher_with_tag = baseN_to_base10(cipher, key) ^ obstructor

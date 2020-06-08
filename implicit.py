@@ -6,6 +6,7 @@ import traceback
 import random
 
 from global_constants import KEY_LENGTH, KEY_CHARMAP
+from radix import baseN_to_base10
 
 
 # When this function is called, it returns the directory name of the driver file that called the B94 library
@@ -83,3 +84,21 @@ def key_error_check(key):
     for ch in key:
         if ch not in KEY_CHARMAP:
             raise ValueError(msg.format(f"B94 key must contain only ASCII characters 33 to 126, inclusive"))
+
+
+# Returns integer with same number of digits as 'length' to be XOR'd with base-10 cipher to obstruct it
+def get_obstructor(key):
+    """Using key as seed, returns integer (base-94 key to base-10 integer) to be XOR'd with base-10 cipher;
+    this obscures comparisons b/w same-length ciphers."""
+
+    key_error_check(key)
+
+    # Shuffle base-94 symbol set using key as seed
+    symbol_set = list(key)
+    random.seed(key)
+    random.shuffle(symbol_set)
+
+    # Convert key to base-10 integer
+    obstructor = baseN_to_base10(key, symbol_set)
+
+    return obstructor
