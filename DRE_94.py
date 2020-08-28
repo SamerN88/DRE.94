@@ -14,7 +14,6 @@
 # TODO: remove obstructor and instead use this method to prevent cipher comparison:
 #    TODO: don't use set() to get charset, use for-loop to get distinct chars then shuffle list with key as seed
 #    TODO: OR FIND WAY TO PREDICT LENGTH OF BASE-10 CIPHER AND MAKE OBSTRUCTOR WITHIN 1 DIGIT SAME LENGTH
-# add option where decryption will only work in the next 24 hours
 # TODO: change order of base-11 cipher elements: cipher first, then tag
 # TODO: update docstrings to describe parameters and return values and their types
 # TODO: consider how to access all methods from DRE_94.<method>; might have to restructure library
