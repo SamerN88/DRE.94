@@ -1,7 +1,7 @@
 # DRE.94
 #### **Dynamic Radix Encryption with base-94 cipher: private key text encryption cryptosystem**
 
-<u>Author:</u> Samer N. Najjar ([About me](https://najjarcv.imfast.io/))<br>
+<u>Author:</u> Samer N. Najjar (<a href="https://najjarcv.imfast.io/" target="_blank">About me</a>)<br>
 <u>Date launched:</u> 18 October 2019<br>
 <u>Last updated:</u> 4 June 2020
 
