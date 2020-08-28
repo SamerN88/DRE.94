@@ -7,7 +7,7 @@ from implicit import key_error_check
 
 
 def is_key(key):
-    """Checks if a string is a valid B94 key (will not accept any other iterable besides str); returns True or False."""
+    """Checks if a string is a valid DRE.94 key (will not accept any other iterable besides str); returns True or False."""
 
     # Check that key is of type str (if key is represented as list or tuple, problems occur in encryption/decryption)
     if type(key) != str:
@@ -44,6 +44,6 @@ def approx_loc_in_keyspace(key):
 
 # This returns a new generator when called; useful when desire is to reset KEYSPACE generator
 def get_keyspace():
-    """Returns a Python generator for all possible B94 keys as lists of characters instead of strings."""
+    """Returns a Python generator for all possible DRE.94 keys as lists of characters instead of strings."""
 
     return itertools.permutations(KEY_CHARMAP, KEY_LENGTH)

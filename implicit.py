@@ -9,7 +9,7 @@ from global_constants import KEY_LENGTH, KEY_CHARMAP
 from radix import baseN_to_base10
 
 
-# When this function is called, it returns the directory name of the driver file that called the B94 library
+# When this function is called, it returns the directory name of the driver file that called the DRE.94 library
 def driver_cwd(filename=None):
     """Returns the path to the directory containing the driver code that initially called the module."""
 
@@ -22,7 +22,7 @@ def driver_cwd(filename=None):
             dirpath = sep.join(traceback.extract_stack()[-2][0].split(sep)[:-1])
 
     except IndexError:
-        # IndexError occurs if calling script is inside the B94 library script (unlikely, but worth accounting for)
+        # IndexError occurs if calling script is inside the DRE.94 library script (unlikely, but worth accounting for)
         dirpath = sep.join(traceback.extract_stack()[-1][0].split(sep)[:-1])
 
     # optional file arg; returns path to file in the calling directory
@@ -45,7 +45,7 @@ def arg_check(arg, argname, argtypes):
 
 # Shuffles base-11 symbol set (0123456789 + SPACE) with key as seed
 def shuffle_base11(key):
-    """Shuffles base-11 symbol set (0123456789 + SPACE) with B94 key as seed."""
+    """Shuffles base-11 symbol set (0123456789 + SPACE) with DRE.94 key as seed."""
 
     key_error_check(key)
 
@@ -63,27 +63,27 @@ def shuffle_base11(key):
 
 
 def key_error_check(key):
-    """Checks if argument 'key' is a valid B94 key, and raises error with specific reason if not."""
+    """Checks if argument 'key' is a valid DRE.94 key, and raises error with specific reason if not."""
 
-    msg = "input for argument 'key' is not a valid B94 key (reason: {})"
+    msg = "input for argument 'key' is not a valid DRE.94 key (reason: {})"
 
     # Check that key is of type str (if key is represented as list or tuple, problems occur in encryption/decryption)
     if type(key) != str:
-        raise TypeError(msg.format("B94 key must be represented as a string (type str)"))
+        raise TypeError(msg.format("DRE.94 key must be represented as a string (type str)"))
 
     # Check for correct key length
     if len(key) != KEY_LENGTH:
-        raise ValueError(msg.format(f"B94 key must be of length {KEY_LENGTH}"))
+        raise ValueError(msg.format(f"DRE.94 key must be of length {KEY_LENGTH}"))
 
     # Check for character uniqueness
     for ch in key:
         if key.count(ch) != 1:
-            raise ValueError(msg.format(f"B94 key must contain only distinct characters"))
+            raise ValueError(msg.format(f"DRE.94 key must contain only distinct characters"))
 
     # Check that key uses KEY_CHARMAP characters (ASCII 33 to 126)
     for ch in key:
         if ch not in KEY_CHARMAP:
-            raise ValueError(msg.format(f"B94 key must contain only ASCII characters 33 to 126, inclusive"))
+            raise ValueError(msg.format(f"DRE.94 key must contain only ASCII characters 33 to 126, inclusive"))
 
 
 # Returns integer with same number of digits as 'length' to be XOR'd with base-10 cipher to obstruct it

@@ -1,12 +1,12 @@
 import pandas as pd
 
-from B94 import encrypt, decrypt
+from DRE_94 import encrypt, decrypt
 from implicit import key_error_check, arg_check
 
 
 # Currently only supports CSV and Excel files
 def encrypt_tabular_data(data_source, key, cols=(0, None), rows=(0, None), save_as=None, inplace=False):
-    """Encrypts a tabular file using a B94 key, allowing user to specify which portion of the data to be encrypted.
+    """Encrypts a tabular file using a DRE.94 key, allowing user to specify which portion of the data to be encrypted.
     Allows user the option to save the encrypted data to a file. Currently only supports CSV and Excel files."""
 
     arg_check(inplace, 'inplace', bool)
@@ -108,7 +108,7 @@ def encrypt_tabular_data(data_source, key, cols=(0, None), rows=(0, None), save_
 
 # Currently only supports CSV and Excel files
 def decrypt_tabular_data(data_source, key, cols=(0, None), rows=(0, None), save_as=None, inplace=False):
-    """Decrypts a tabular file using a B94 key, allowing user to specify which portion of the data to be decrypted.
+    """Decrypts a tabular file using a DRE.94 key, allowing user to specify which portion of the data to be decrypted.
     Allows user the option to save the decrypted data to a file. Currently only supports CSV and Excel files."""
 
     arg_check(inplace, 'inplace', bool)

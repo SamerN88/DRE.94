@@ -1,4 +1,4 @@
-"""BASE-94 ENCRYPTION (B94): Private key text encryption algorithm
+"""Dynamic Radix Encryption with base-94 cipher (DRE.94): private key text encryption cryptosystem
 
    Author: Samer N. Najjar (About me: https://najjarcv.imfast.io/)
    Date launched: 18 October 2019
@@ -6,13 +6,18 @@
 
    Keyspace size: 94! (~ 1.0873661567e+146)
 
-   Supports arbitrary input character encoding (output ciphertext strictly ASCII)."""
+   Supports arbitrary plaintext character encoding (ciphertext strictly ASCII)."""
 
-# TODO: add option where decryption will only work in the next 24 hours
+# TODO: TWEAK COLLISION TEST TO FIND SEEDS THAT COLLIDE?
+# TODO: FIX ENCRYPTION SO IT CAN ENCRYPTION SINGLE-LENGTH CHARSET LIKE 's' OR 'ssss'
+
+# TODO: remove obstructor and instead use this method to prevent cipher comparison:
+#    TODO: don't use set() to get charset, use for-loop to get distinct chars then shuffle list with key as seed
+#    TODO: OR FIND WAY TO PREDICT LENGTH OF BASE-10 CIPHER AND MAKE OBSTRUCTOR WITHIN 1 DIGIT SAME LENGTH
+# add option where decryption will only work in the next 24 hours
 # TODO: change order of base-11 cipher elements: cipher first, then tag
-# TODO: fix bug where encryption is not consistent for same seed
 # TODO: update docstrings to describe parameters and return values and their types
-# TODO: consider how to access all methods from B94.<method>; might have to restructure library
+# TODO: consider how to access all methods from DRE_94.<method>; might have to restructure library
 
 import random
 import secrets
@@ -24,7 +29,7 @@ from global_constants import KEY_CHARMAP, KEY_LENGTH
 
 # Generates a string of length 94 with distinct characters, using ASCII values 33-126
 def generate_key(seed=None):
-    """Generates a B94 key: string of length 94 with distinct characters, using ASCII characters 33-126."""
+    """Generates a DRE.94 key: string of length 94 with distinct characters, using ASCII characters 33-126."""
 
     # If seed, ensure that seed is hashable; if not, raise proper error plus the invalid seed
     if seed is not None:
@@ -51,7 +56,7 @@ def generate_key(seed=None):
 
 # Encrypts string with arbitrary character encoding into ASCII ciphertext
 def encrypt(text_source, key, fromfile=False):
-    """Encrypts string with arbitrary character encoding into ASCII ciphertext (using a B94 key)."""
+    """Encrypts string with arbitrary character encoding into ASCII ciphertext (using a DRE.94 key)."""
 
     arg_check(fromfile, 'fromfile', bool)
     key_error_check(key)
@@ -69,7 +74,12 @@ def encrypt(text_source, key, fromfile=False):
         return ''
 
     # Get set of distinct chars in text; to be used as numbering system.
-    charset = list(set(text))
+    charset = []
+    for ch in text:
+        if ch not in charset:
+            charset.append(ch)
+    random.seed(key)
+    random.shuffle(charset)
 
     # If first char in text is 0th symbol, it will disappear in decryption; swap first and last symbols to fix this
     if text[0] == charset[0]:
@@ -78,10 +88,10 @@ def encrypt(text_source, key, fromfile=False):
         charset[-1] = zero
 
     # Cipher is XOR'd with obstructor so equivalent ciphers with different keys can't be compared for 1:1 matching chars
-    obstructor = get_obstructor(key)
+    # obstructor = get_obstructor(key)
 
     # Convert text to base-10 integer using charset (then obstruct)
-    base10_cipher = baseN_to_base10(text, charset) ^ obstructor
+    base10_cipher = baseN_to_base10(text, charset) #^ obstructor
 
     # Get shuffled base-11 symbol set with key as seed
     base11_symbols = shuffle_base11(key)
@@ -91,7 +101,7 @@ def encrypt(text_source, key, fromfile=False):
 
     # Combine base-11 tag and base-10 cipher, get full base-11 cipher; then convert full base-11 cipher to base-10
     base11_cipher = tag + ' ' + str(base10_cipher)
-    base10_cipher_with_tag = baseN_to_base10(base11_cipher, base11_symbols) ^ obstructor  # then obstruct once more
+    base10_cipher_with_tag = baseN_to_base10(base11_cipher, base11_symbols) #^ obstructor  # then obstruct once more
 
     # Finally, convert full base-10 cipher to base-94 with key
     cipher = base10_to_baseN(base10_cipher_with_tag, key)
@@ -101,7 +111,7 @@ def encrypt(text_source, key, fromfile=False):
 
 # Decrypts ASCII ciphertext into plaintext with arbitrary character encoding
 def decrypt(cipher_source, key, fromfile=False):
-    """Decrypts ASCII ciphertext into plaintext with arbitrary character encoding (using a B94 key)."""
+    """Decrypts ASCII ciphertext into plaintext with arbitrary character encoding (using a DRE.94 key)."""
 
     arg_check(fromfile, 'fromfile', bool)
     key_error_check(key)
@@ -127,10 +137,10 @@ def decrypt(cipher_source, key, fromfile=False):
     base11_symbols = shuffle_base11(key)
 
     # Get obstructor (cipher was XOR'd with obstructor in encryption)
-    obstructor = get_obstructor(key)
+    # obstructor = get_obstructor(key)
 
     # Convert base-94 cipher to base-10 integer using key, then un-obstruct
-    base10_cipher_with_tag = baseN_to_base10(cipher, key) ^ obstructor
+    base10_cipher_with_tag = baseN_to_base10(cipher, key) #^ obstructor
 
     # Convert base-10 cipher to base-11 cipher, i.e. tag and text cipher (also reverse XOR with obstructor)
     base11_cipher = base10_to_baseN(base10_cipher_with_tag, base11_symbols)
@@ -138,7 +148,7 @@ def decrypt(cipher_source, key, fromfile=False):
     # Separate tag and base-10 cipher
     base11_cipher_split = base11_cipher.split()
     tag = base11_cipher_split[:-1]
-    base10_cipher = int(base11_cipher_split[-1]) ^ obstructor  # un-obstruct again
+    base10_cipher = int(base11_cipher_split[-1]) #^ obstructor  # un-obstruct again
 
     # Get text length and charset ords form tag
     length, *ords = [int(i) for i in tag]

@@ -1,11 +1,11 @@
-"""Functions that test B94's algorithm."""
+"""Functions that test DRE.94's algorithm."""
 
 
 import random
 import time
 
 from datetime import datetime
-from B94 import generate_key, encrypt, decrypt
+from DRE_94 import generate_key, encrypt, decrypt
 from global_constants import KEY_LENGTH, KEYSPACE_SIZE
 from key_ops import get_keyspace, approx_loc_in_keyspace
 from implicit import key_error_check, arg_check
@@ -59,9 +59,9 @@ def reliance_test(trials, verbose=True):
     return True
 
 
-# Function that brute-forces B94; user has the option to specify key used (strictly verbose)
+# Function that brute-forces DRE.94; user has the option to specify key used (strictly verbose)
 def brute_force(key=None, time_limit=None, verbose=True):
-    """Function that brute-forces B94; user has the option to specify key used.
+    """Function that brute-forces DRE.94; user has the option to specify key used.
     This function is verbose by default (verbose mode can be switched off)."""
 
     if key is None:
@@ -82,7 +82,7 @@ def brute_force(key=None, time_limit=None, verbose=True):
     start_datetime = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
     percentile = approx_loc_in_keyspace(key) * 100
 
-    vprint('Start B94 brute force:', start_datetime)
+    vprint('Start DRE.94 brute force:', start_datetime)
     vprint('\nKey used:')
     vprint(key)
     vprint('\nKey number (base-94 key to base-10 integer):')
@@ -134,7 +134,7 @@ def brute_force(key=None, time_limit=None, verbose=True):
     vprint(percent, ' %' if 'e' in str(percent) else '%', sep='')
     vprint(('*' if success else '-') * KEY_LENGTH)
 
-    vprint('\nEnd B94 brute force:', end_datetime)
+    vprint('\nEnd DRE.94 brute force:', end_datetime)
 
     return success
 
@@ -161,7 +161,7 @@ def collision_test(key=None, time_limit=None, verbose=True):
 
     start_datetime = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
 
-    vprint('Start B94 collision test:', start_datetime)
+    vprint('Start DRE.94 collision test:', start_datetime)
     vprint('\nKey used:')
     vprint(key)
 
@@ -197,6 +197,6 @@ def collision_test(key=None, time_limit=None, verbose=True):
     vprint(count)
     vprint(('*' if success else '-') * KEY_LENGTH)
 
-    vprint('\nEnd B94 collision test:', end_datetime)
+    vprint('\nEnd DRE.94 collision test:', end_datetime)
 
     return success

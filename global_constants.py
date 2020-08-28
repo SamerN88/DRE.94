@@ -1,4 +1,4 @@
-"""Global constants, fundamental values of B94."""
+"""Global constants and fundamental values of DRE.94."""
 
 import itertools
 import math

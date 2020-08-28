@@ -11,6 +11,7 @@ def base10_to_base94(integer: int) -> str:
     symbol_set = KEY_CHARMAP
     base = 94
 
+    # Negative forbidden to eliminate symbol ambiguity
     if integer < 0:
         msg = 'input for base-10 integer cannot be negative'
         raise ValueError(msg)
@@ -18,12 +19,11 @@ def base10_to_base94(integer: int) -> str:
         return symbol_set[0]
 
     bits = []
-    while integer >= base:
+    while integer > 0:
         bit = symbol_set[integer % base]
         bits.append(bit)
         integer //= base
 
-    bits.append(symbol_set[integer])
     return ''.join(reversed(bits))
 
 
@@ -58,11 +58,18 @@ def base10_to_baseN(integer, symbol_set):
     symbol_set = list(symbol_set)
     base = len(symbol_set)
 
+    # Symbol set must contain at least 2 symbols (minimum base is 2)
+    if base in [0, 1]:
+        msg = f'symbol set must contain at least 2 symbols ({base} given)'
+        raise ValueError(msg)
+
+    # Check for symbol uniqueness
     for ch in symbol_set:
         if symbol_set.count(ch) != 1:
             msg = 'all characters in symbol set must be distinct'
             raise ValueError(msg)
 
+    # Negative forbidden to eliminate symbol ambiguity
     if integer < 0:
         msg = 'input for base-10 integer cannot be negative'
         raise ValueError(msg)
@@ -70,12 +77,11 @@ def base10_to_baseN(integer, symbol_set):
         return symbol_set[0]
 
     bits = []
-    while integer >= base:
+    while integer > 0:
         bit = symbol_set[integer % base]
         bits.append(bit)
         integer //= base
 
-    bits.append(symbol_set[integer])
     return ''.join(reversed(bits))
 
 
@@ -86,6 +92,12 @@ def baseN_to_base10(baseN, symbol_set):
     symbol_set = list(symbol_set)
     N = len(symbol_set)  # N is old base
 
+    # Symbol set must contain at least 2 symbols (minimum base is 2)
+    if N in [0, 1]:
+        msg = f'symbol set must contain at least 2 symbols ({N} given)'
+        raise ValueError(msg)
+
+    # Check for symbol uniqueness
     for ch in symbol_set:
         if symbol_set.count(ch) != 1:
             msg = 'all characters in symbol set must be distinct'

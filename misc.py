@@ -1,4 +1,4 @@
-"""Miscellaneous functions, including method to save ciphers, keys, or any text to a text file."""
+"""Miscellaneous functions."""
 
 
 # Ciphers/keys/text can be saved manually in any text format, but this method expedites the saving process
