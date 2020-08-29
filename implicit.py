@@ -31,7 +31,7 @@ def driver_cwd(filename=None):
 
 # Meant to be called in the beginning of a function definition to check arguments for correct type
 def arg_check(arg, argname, argtypes):
-    """Checks if passed argument 'arg' is the correct type 'argtype'."""
+    """Checks if passed argument 'arg' is one of the correct types in 'argtypes'."""
 
     if type(argtypes) == type:
         argtypes = [argtypes]
@@ -50,7 +50,7 @@ def shuffle_base11(key):
     key_error_check(key)
 
     # Get zero symbol (0 or SPACE must be 0th symbol as they can't be first char in base-11 cipher)
-    zeros = list(' 0')
+    zeros = [' ', '0']
     random.seed(key)
     z_index = random.randint(0, 1)
     zero = zeros[z_index]

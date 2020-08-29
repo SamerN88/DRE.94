@@ -72,7 +72,7 @@ def encrypt(text_source, key, fromfile=False):
     if text == '':
         return ''
 
-    # Get set of distinct chars in text; to be used as numbering system.
+    # Get set of distinct chars in text to be used as numbering system (not using set() b/c it's inconsistent)
     charset = []
     for ch in text:
         if ch not in charset:
@@ -80,17 +80,8 @@ def encrypt(text_source, key, fromfile=False):
     random.seed(key)
     random.shuffle(charset)
 
-    # If first char in text is 0th symbol, it will disappear in decryption; swap first and last symbols to fix this
-    if text[0] == charset[0]:
-        zero = charset[0]
-        charset[0] = charset[-1]
-        charset[-1] = zero
-
-    # Cipher is XOR'd with obstructor so equivalent ciphers with different keys can't be compared for 1:1 matching chars
-    # obstructor = get_obstructor(key)
-
-    # Convert text to base-10 integer using charset (then obstruct)
-    base10_cipher = baseN_to_base10(text, charset) #^ obstructor
+    # Convert text to base-10 integer using charset
+    base10_cipher = baseN_to_base10(text, ['\0'] + charset)  # initial null character ensures no zero digit in text
 
     # Get shuffled base-11 symbol set with key as seed
     base11_symbols = shuffle_base11(key)
@@ -100,7 +91,7 @@ def encrypt(text_source, key, fromfile=False):
 
     # Combine base-11 tag and base-10 cipher, get full base-11 cipher; then convert full base-11 cipher to base-10
     base11_cipher = tag + ' ' + str(base10_cipher)
-    base10_cipher_with_tag = baseN_to_base10(base11_cipher, base11_symbols) #^ obstructor  # then obstruct once more
+    base10_cipher_with_tag = baseN_to_base10(base11_cipher, base11_symbols)
 
     # Finally, convert full base-10 cipher to base-94 with key
     cipher = base10_to_baseN(base10_cipher_with_tag, key)
@@ -135,11 +126,8 @@ def decrypt(cipher_source, key, fromfile=False):
     # Get shuffled base-11 symbol set with key as seed
     base11_symbols = shuffle_base11(key)
 
-    # Get obstructor (cipher was XOR'd with obstructor in encryption)
-    # obstructor = get_obstructor(key)
-
-    # Convert base-94 cipher to base-10 integer using key, then un-obstruct
-    base10_cipher_with_tag = baseN_to_base10(cipher, key) #^ obstructor
+    # Convert base-94 cipher to base-10 integer using key
+    base10_cipher_with_tag = baseN_to_base10(cipher, key)
 
     # Convert base-10 cipher to base-11 cipher, i.e. tag and text cipher (also reverse XOR with obstructor)
     base11_cipher = base10_to_baseN(base10_cipher_with_tag, base11_symbols)
@@ -147,7 +135,7 @@ def decrypt(cipher_source, key, fromfile=False):
     # Separate tag and base-10 cipher
     base11_cipher_split = base11_cipher.split()
     tag = base11_cipher_split[:-1]
-    base10_cipher = int(base11_cipher_split[-1]) #^ obstructor  # un-obstruct again
+    base10_cipher = int(base11_cipher_split[-1])
 
     # Get text length and charset ords form tag
     length, *ords = [int(i) for i in tag]
@@ -156,7 +144,7 @@ def decrypt(cipher_source, key, fromfile=False):
     charset = [chr(i) for i in ords]
 
     # Get text (base-N text) using charset which was derived earlier
-    text = base10_to_baseN(base10_cipher, charset)
+    text = base10_to_baseN(base10_cipher, ['\0'] + charset)
 
     # If text was comprised of 1 unique char, it would decrypt to a single char; correct this with length var
     if len(text) == 1:

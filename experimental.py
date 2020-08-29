@@ -13,9 +13,8 @@ from radix import base94_to_base10
 
 
 # Tests reliability of algorithm by checking if decrypted values match original values, for any number of trials
-def reliance_test(trials, verbose=True):
-    """Tests reliability of algorithm by checking if decrypted values match original values for any number of trials.
-    This function is verbose by default (verbose mode can be switched off)."""
+def reliance_test(trials, verbose=False):
+    """Tests reliability of algorithm by checking if decrypted values match original values for any number of trials."""
 
     arg_check(verbose, 'verbose', bool)
 
@@ -26,32 +25,39 @@ def reliance_test(trials, verbose=True):
         def vprint(*args, **kwargs): pass
 
     # First try edge cases
-    for text in ['a', 'a'*100, '']:
+    edge_cases = ['a', 'a'*100, '']
+    vprint(f'EDGE CASES ({len(edge_cases)}):\n')
+    for text in edge_cases:
         key = generate_key()
+
+        vprint('Key:', key)
+        vprint('Text:', text)
+
         cipher = encrypt(text, key)
         dtext = decrypt(cipher, key)
         if dtext != text:
             vprint('FAIL')
             return False
 
-        vprint('Key:', key)
-        vprint('Text:', text)
         vprint('Cipher:', cipher)
         vprint()
 
     # Then run random trials (which include non-ASCII values)
+    vprint(f'RANDOM TRIALS ({trials}):\n')
     for i in range(trials):
         key = generate_key()
         length = random.randint(0, 500)
-        text = ''.join(chr(random.randint(0, 500)) for i in range(length))
+        text = ''.join(chr(random.randint(1, 500)) for i in range(length))
+
+        vprint('Key:', key)
+        vprint('Text:', text)
+
         cipher = encrypt(text, key)
         dtext = decrypt(cipher, key)
         if dtext != text:
             vprint('FAIL')
             return False
 
-        vprint('Key:', key)
-        vprint('Text:', text)
         vprint('Cipher:', cipher)
         vprint()
 
@@ -103,7 +109,7 @@ def brute_force(key=None, time_limit=None, verbose=True):
             if key == ''.join(permutation):
                 break
 
-    # Separate for-loop for stop_after so the runtime of the extra if-statement isn't wasted in the previous for-loop
+    # Separate for-loop for time_limit so the runtime of the extra if-statement isn't wasted in the previous for-loop
     else:
         for permutation in keyspace:
             if time.time() - t1 >= time_limit:
