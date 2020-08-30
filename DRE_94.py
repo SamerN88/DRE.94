@@ -62,12 +62,21 @@ def encrypt(text_source, key, fromfile=False):
 
     if fromfile:
         # If filename, get text from file
-        text_file = open(driver_cwd(text_source))
-        text = ''.join(text_file.readlines())
+        try:
+            text_file = open(driver_cwd(text_source))
+            text = text_file.read()
+        except UnicodeDecodeError as e:
+            msg = f'{e.args[4]}\n{" " * 20}(could not read text from file: {driver_cwd(text_source)})'
+            raise UnicodeDecodeError(*e.args[:4], msg)
 
     else:
         # If raw text is passed, use text_source directly as the text
         text = text_source
+
+    # Ensures text never starts with 0th digit; null character is used as dummy 0th digit in charset
+    if '\0' in text:
+        msg = 'null character (\\x00) forbidden in plaintext'
+        raise ValueError(msg)
 
     if text == '':
         return ''
@@ -87,7 +96,7 @@ def encrypt(text_source, key, fromfile=False):
     base11_symbols = shuffle_base11(key)
 
     # Tag contains info on length of text and ords of charset (lengthens cipher, but necessary for arbitrary charset)
-    tag = str(len(text)) + ' ' + ' '.join(str(ord(ch)) for ch in charset)  # tag is in base-11 (0123456789 + SPACE)
+    tag = ' '.join(str(ord(ch)) for ch in charset)  # tag is in base-11 (0123456789 + SPACE)
 
     # Combine base-11 tag and base-10 cipher, get full base-11 cipher; then convert full base-11 cipher to base-10
     base11_cipher = tag + ' ' + str(base10_cipher)
@@ -111,14 +120,19 @@ def decrypt(cipher_source, key, fromfile=False):
         # If filename, get cipher from text file
         try:
             cipher_file = open(driver_cwd(cipher_source), 'r')
-            cipher = cipher_file.readlines()[0]
+            cipher = cipher_file.read().replace('\n', '').replace(' ', '')  # ignore whitespace
             cipher_file.close()
         except UnicodeDecodeError as e:
-            msg = f'{e.args[4]}\n{" " * 20}(could not read file as ciphertext: {driver_cwd(cipher_source)})'
+            msg = f'{e.args[4]}\n{" " * 20}(could not read text from file: {driver_cwd(cipher_source)})'
             raise UnicodeDecodeError(*e.args[:4], msg)
 
     else:
         cipher = cipher_source
+
+    for ch in cipher:
+        if ch not in KEY_CHARMAP:
+            msg = 'invalid DRE.94 cipher; all characters must be from set of ASCII codes 33 to 126'
+            raise ValueError(msg)
 
     if cipher == '':
         return ''
@@ -134,20 +148,14 @@ def decrypt(cipher_source, key, fromfile=False):
 
     # Separate tag and base-10 cipher
     base11_cipher_split = base11_cipher.split()
-    tag = base11_cipher_split[:-1]
+    tag_list = base11_cipher_split[:-1]
     base10_cipher = int(base11_cipher_split[-1])
 
-    # Get text length and charset ords form tag
-    length, *ords = [int(i) for i in tag]
-
-    # Create charset from ords (which came from tag)
+    # From tag, get ords of text charset, then build charset with ords
+    ords = [int(i) for i in tag_list]
     charset = [chr(i) for i in ords]
 
     # Get text (base-N text) using charset which was derived earlier
     text = base10_to_baseN(base10_cipher, ['\0'] + charset)
-
-    # If text was comprised of 1 unique char, it would decrypt to a single char; correct this with length var
-    if len(text) == 1:
-        text *= length
 
     return text
