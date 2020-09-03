@@ -14,7 +14,8 @@ from radix import base94_to_base10
 
 # Tests reliability of algorithm by checking if decrypted values match original values, for any number of trials
 def reliance_test(trials, verbose=False):
-    """Tests reliability of algorithm by checking if decrypted values match original values for any number of trials."""
+    """Tests reliability of algorithm by checking if decrypted strings match original
+    strings for any number of trials."""
 
     arg_check(verbose, 'verbose', bool)
 
@@ -22,53 +23,68 @@ def reliance_test(trials, verbose=False):
     if verbose:
         vprint = print
     else:
-        def vprint(*args, **kwargs): pass
+        def vprint(*_args, **_kwargs): pass
+
+    # Set display prompts for verbose mode (for refactoring purposes)
+    width = 20
+    pad1 = ' '*4
+    pad2 = ' '*2
+    trial_prompt = pad2 + 'Trial #'
+    key_prompt = pad1 + 'Key:'.ljust(width)
+    original_plaintext_prompt = pad1 + 'Original plaintext:'.ljust(width)
+    ciphertext_prompt = pad1 + 'Ciphertext:'.ljust(width)
+    decrypted_plaintext_prompt = pad1 + 'Decrypted plaintext:'.ljust(width)
+    verdict_prompt = 'Verdict:'
+    fail_status = 'FAIL'
+    pass_status = 'PASS'
 
     # First try edge cases
-    edge_cases = ['a', 'a'*100, '']
+    edge_cases = [('a', 'Single character'), ('a'*100, 'String with one distinct character'), ('', 'Empty string')]
     vprint(f'EDGE CASES ({len(edge_cases)}):\n')
-    for text in edge_cases:
+    for text, description in edge_cases:
         key = generate_key()
-
-        vprint('Key:', key)
-        vprint('Text:', text)
-
         cipher = encrypt(text, key)
-        dtext = decrypt(cipher, key)
-        if dtext != text:
-            vprint('FAIL')
-            return False
+        d_text = decrypt(cipher, key)
 
-        vprint('Cipher:', cipher)
+        vprint(pad2 + description)
+        vprint(key_prompt, key)
+        vprint(original_plaintext_prompt, text)
+        vprint(ciphertext_prompt, cipher)
+        vprint(decrypted_plaintext_prompt, d_text)
         vprint()
 
-    # Then run random trials (which include non-ASCII values)
-    vprint(f'RANDOM TRIALS ({trials}):\n')
+        if d_text != text:
+            vprint(verdict_prompt, fail_status)
+            return False
+
+    # Then run random trials (which include non-ASCII strings)
+    vprint(f'RANDOMIZED TRIALS ({trials}):\n')
     for i in range(trials):
         key = generate_key()
         length = random.randint(0, 500)
-        text = ''.join(chr(random.randint(1, 500)) for i in range(length))
-
-        vprint('Key:', key)
-        vprint('Text:', text)
-
+        text = ''.join(chr(random.randint(1, 500)) for _ in range(length))
         cipher = encrypt(text, key)
-        dtext = decrypt(cipher, key)
-        if dtext != text:
-            vprint('FAIL')
-            return False
+        d_text = decrypt(cipher, key)
 
-        vprint('Cipher:', cipher)
+        vprint(trial_prompt, i+1, sep='')
+        vprint(key_prompt, key)
+        vprint(original_plaintext_prompt, text)
+        vprint(ciphertext_prompt, cipher)
+        vprint(decrypted_plaintext_prompt, d_text)
         vprint()
 
-    vprint('PASS')
+        if d_text != text:
+            vprint(verdict_prompt, fail_status)
+            return False
+
+    vprint(verdict_prompt, pass_status)
     return True
 
 
 # Function that brute-forces DRE.94; user has the option to specify key used (strictly verbose)
 def brute_force(key=None, time_limit=None, verbose=True):
-    """Function that brute-forces DRE.94; user has the option to specify key used.
-    This function is verbose by default (verbose mode can be switched off)."""
+    """Function that brute-forces DRE.94; user has the option to specify key used. This
+    function is verbose by default (verbose mode can be switched off)."""
 
     if key is None:
         key = generate_key()
@@ -147,8 +163,9 @@ def brute_force(key=None, time_limit=None, verbose=True):
 
 # Unlike brute_force, which iterates over the keyspace successively, collision_test randomly tests keys
 def collision_test(key=None, time_limit=None, verbose=True):
-    """Randomly generates keys until one equals a random fixed key (essentially a Bogosort);
-    user has the option to pass a fixed key. This function is verbose by default (verbose mode can be switched off)."""
+    """Randomly generates keys until one equals a random fixed key (essentially a
+    Bogosort); user has the option to pass a fixed key. This function is verbose by
+    default (verbose mode can be switched off)."""
 
     if key is None:
         key = generate_key()

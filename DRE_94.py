@@ -8,20 +8,18 @@
 
    Supports arbitrary plaintext character encoding (ciphertext strictly ASCII)."""
 
-# TODO: TWEAK COLLISION TEST TO FIND SEEDS THAT COLLIDE?
-# TODO: FIX ENCRYPTION SO IT CAN ENCRYPTION SINGLE-LENGTH CHARSET LIKE 's' OR 'ssss'
-
-# TODO: remove obstructor and instead use this method to prevent cipher comparison:
-#    TODO: don't use set() to get charset, use for-loop to get distinct chars then shuffle list with key as seed
-#    TODO: OR FIND WAY TO PREDICT LENGTH OF BASE-10 CIPHER AND MAKE OBSTRUCTOR WITHIN 1 DIGIT SAME LENGTH
-# TODO: change order of base-11 cipher elements: cipher first, then tag
+# TODO: TWEAK COLLISION TEST TO FIND SEEDS THAT COLLIDE
 # TODO: update docstrings to describe parameters and return values and their types
-# TODO: consider how to access all methods from DRE_94.<method>; might have to restructure library
+# TODO: consider how to access all methods from DRE.94 as such (might have to restructure library):
+#   [SUBJECT TO CHANGE]
+#   DRE_94.<method> for all main cryptographic functionality
+#   DRE_94.<module>.<method> for all ancillary functionality (like base-conversion)
+# TODO: later make DRE.94 webpage, if deemed useful since Github already exists
 
 import random
 import secrets
 
-from implicit import driver_cwd, arg_check, shuffle_base11, key_error_check, get_obstructor
+from implicit import driver_cwd, arg_check, shuffle_base11, key_error_check
 from radix import baseN_to_base10, base10_to_baseN
 from global_constants import KEY_CHARMAP, KEY_LENGTH
 
