@@ -13,7 +13,7 @@ from radix import base94_to_base10
 
 
 # Tests reliability of algorithm by checking if decrypted values match original values, for any number of trials
-def reliance_test(trials, verbose=False):
+def reliance_test(trials=10, verbose=False):
     """Tests reliability of algorithm by checking if decrypted strings match original
     strings for any number of trials."""
 
@@ -39,7 +39,11 @@ def reliance_test(trials, verbose=False):
     pass_status = 'PASS'
 
     # First try edge cases
-    edge_cases = [('a', 'Single character'), ('a'*100, 'String with one distinct character'), ('', 'Empty string')]
+    edge_cases = [
+        ('a', 'Single character'),
+        ('a'*100, 'String with one distinct character'),
+        ('', 'Empty string'),
+    ]
     vprint(f'EDGE CASES ({len(edge_cases)}):\n')
     for text, description in edge_cases:
         key = generate_key()
@@ -99,7 +103,7 @@ def brute_force(key=None, time_limit=None, verbose=True):
     if verbose:
         vprint = print
     else:
-        def vprint(*args, **kwargs): pass
+        def vprint(*_args, **_kwargs): pass
 
     start_datetime = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
     percentile = approx_loc_in_keyspace(key) * 100
@@ -180,7 +184,7 @@ def collision_test(key=None, time_limit=None, verbose=True):
     if verbose:
         vprint = print
     else:
-        def vprint(*args, **kwargs): pass
+        def vprint(*_args, **_kwargs): pass
 
     start_datetime = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
 

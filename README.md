@@ -3,7 +3,7 @@
 
 <u>Author:</u> Samer N. Najjar (<a href="https://najjarcv.imfast.io/" target="_blank">About me</a>)<br>
 <u>Date launched:</u> 18 October 2019<br>
-<u>Last updated:</u> 4 June 2020
+<u>Last updated:</u> 28 December 2020
 
 Keyspace size: 94! (~ 1.0873661567×10<sup>146</sup>)
 

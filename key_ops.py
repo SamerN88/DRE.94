@@ -32,7 +32,8 @@ def is_key(key):
 
 def approx_loc_in_keyspace(key):
     """Returns a value between 0 and 1 (inclusive) indicating approximate location of key in keyspace,
-    i.e. the integer distance from the smallest base-94 key (not absolute location in keyspace)."""
+    i.e. the integer distance from the smallest base-94 key over the integer distance between the smallest
+    and largest keys (not absolute location in keyspace)."""
 
     key_error_check(key)
 
