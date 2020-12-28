@@ -13,3 +13,6 @@ KEYSPACE_SIZE = math.factorial(KEY_LENGTH)  # if key length not equal to length 
 
 # Generator containing all possible keys as lists (created upon importing module)
 KEYSPACE = itertools.permutations(KEY_CHARMAP, KEY_LENGTH)
+
+# Large Mersenne prime used as a base in the seed hashing function
+M512 = 2**512 - 1

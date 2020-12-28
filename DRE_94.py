@@ -26,39 +26,67 @@
 #   [check out https://docs.python-guide.org/writing/structure/]
 
 import random
-import secrets
+import time
 
 from implicit import driver_cwd, arg_check, shuffle_base11, key_error_check
 from radix import baseN_to_base10, base10_to_baseN
-from global_constants import KEY_CHARMAP, KEY_LENGTH, PRINTABLE_ASCII
+from global_constants import KEY_CHARMAP, KEY_LENGTH, PRINTABLE_ASCII, M512
+
+
+def hash_seed(seed, size, base=M512):
+    if isinstance(seed, int):
+        return seed % size
+    elif isinstance(seed, str):
+        pass
+    else:
+        msg = f"seed type must be 'int' or 'str', not '{type(seed).__name__}'"
+        raise TypeError(msg)
+
+    if size == 1:
+        return 0
+
+    hash_idx = 0
+    for ch in seed[::-1]:
+        code = ord(ch)
+        hash_idx = (hash_idx * base + code) % size
+
+    return hash_idx
 
 
 # Generates a string of length 94 with distinct characters, using ASCII values 33-126
 def generate_key(seed=None):
     """Generates a DRE.94 key: string of length 94 with distinct characters, using ASCII characters 33-126."""
 
-    # If seed, ensure that seed is hashable; if not, raise proper error plus the invalid seed
-    if seed is not None:
-        try:
-            random.seed(seed)
-            key = ''.join(random.sample(KEY_CHARMAP, KEY_LENGTH))
-            random.seed()  # reset seed
+    # Default seed is microseconds since epoch
+    if seed is None:
+        seed = time.time_ns() // 1000
 
-        except TypeError as e:
-            msg = f'{e.args[0]}\n{" "*11}invalid seed: {seed}'
-            e.args = (msg,)
-            raise
+    charset = list(KEY_CHARMAP)
 
-    # If no seed, use secrets library instead of random.sample() to generate key more securely
-    else:
-        kmap = list(KEY_CHARMAP)
-        key = ''
-        for i in range(KEY_LENGTH):
-            char = secrets.choice(kmap)
-            key += char
-            kmap.remove(char)
+    # First pass generates intermediate key
+    intermediate = []
+    for size in range(KEY_LENGTH, 0, -1):
+        # Hash the seed to get index in charset
+        idx = hash_seed(seed, size)
+        ch = charset[idx]
 
-    return key
+        # Add char to intermediate key, and remove it from charset
+        intermediate.append(ch)
+        charset.remove(ch)
+
+    # Second pass generates final key, using intermediate key as charset
+    # (purpose of 2nd pass is to ensure close seeds do not produce close keys)
+    key = []
+    for size in range(KEY_LENGTH, 0, -1):
+        # Hash the seed to get index in intermediate key
+        idx = hash_seed(seed, size)
+        ch = intermediate[idx]
+
+        # Add char to final key, and remove it from intermediate key
+        key.append(ch)
+        intermediate.remove(ch)
+
+    return ''.join(key)
 
 
 def load_plaintext(text_source, fromfile):

@@ -304,7 +304,7 @@ def avg_runtime(fxn, trials=10000, args=None, kwargs=None, verbose=False):
     avg_time = total_time / trials
 
     if verbose:
-        print(f'average runtime of function "{fxn.__name__}" for {trials} trials: {avg_time} s')
+        print(f'Average runtime of {trials} trials for function \'{fxn.__name__}\': {avg_time} s')
 
     return avg_time
 
