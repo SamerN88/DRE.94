@@ -289,7 +289,7 @@ def gen_key2(seed=None, base=M512):
     return ''.join(key)
 
 
-def avg_runtime(fxn, trials=10000, args=None, kwargs=None, verbose=False):
+def avg_runtime(fxn, trials=1000, args=None, kwargs=None, verbose=False):
     if args is None:
         args = []
     if kwargs is None:
@@ -344,10 +344,94 @@ def string_space(start_len=1, end_len=95, charset=None):
             yield string
 
 
+# Since Python lists can have a maximum length of 536870912 (on 32-bit systems), a specialized
+# function is needed to generate 1 billion keys and check for uniqueness; this is done with 2
+# passes, where each pass generates a list of 500 million keys. The lists are converted to sets
+# to remove duplicates, then the intersection between the two sets is examined to further rule
+# out duplicates.
+# WARNING: many gigabytes of memory are needed to generate lists of keys this large (roughly
+# 75 GB per list or set; given 2 lists and 2 sets, roughly 300 GB are needed)
+def billion_keys(default=True):
+    # GET AVERAGE RUNTIME
+
+    # Add avg time of appending keys to list
+    avg_time = avg_runtime([].append, args=[KEY_CHARMAP])
+    if default:
+        # Add avg time of generating keys with default int seeds
+        avg_time += avg_runtime(gen_key2)
+    else:
+        # Add avg time of generating keys with str seeds
+        avg_time += avg_runtime(gen_key2, args=['abc'])
+
+        # Add avg time of iterating over string space
+        str_space = string_space()
+        avg_time += avg_runtime(lambda: next(str_space))
+
+    # START TEST
+
+    num_keys = 1000000000  # 1 billion
+    max_list_len = 500000000  # 500 million
+
+    # NOTE: this does not account for the time it takes to convert the large lists to sets, so the
+    # real time may be significantly larger than the estimated time
+    estimated_time = num_keys * avg_time
+
+    print(f'Generating {num_keys} keys (with {"default integer" if default else "custom string"} seeds)')
+    print('Estimated time:', estimated_time, 's', f'({estimated_time / 3600} hr)')
+    print()
+
+    print('Start time:', datetime.now())
+
+    if not default:
+        start_seed = next(string_space())
+        str_space = string_space()
+
+    key_sets = {0: set(), 1: set()}
+
+    start = time.time()
+    for i in range(2):
+        print(f'Pass {i + 1} of {2}')
+        keys = []
+
+        try:
+            if default:
+                # default seeds
+                for j in range(max_list_len):
+                    keys.append(gen_key2())
+            else:
+                # string space seeds
+                for j in range(max_list_len):
+                    s = next(str_space)
+                    keys.append(gen_key2(s))
+
+        except KeyboardInterrupt:
+            print(f'*** INTERRUPTED AT {j + (i * max_list_len)} KEYS ***')
+            break
+        finally:
+            key_sets[i] = set(keys)
+
+    end = time.time()
+
+    print('End time:', datetime.now())
+    print()
+
+    print('Time elapsed:', end - start, 's')
+    print()
+
+    set1 = key_sets[0]
+    set2 = key_sets[1]
+    unique_keys = len(set1) + len(set2) - len(set1.intersection(set2))
+
+    print('# unique keys:', unique_keys)
+    if not default:
+        print('First seed:', start_seed)
+        print('Last seed:', s)
+
+
 # Finding probability of collision given a set of n keys:
 # https://www.ilikebigbits.com/2018_10_20_estimating_hash_collisions.html
 def main():
-    default = True  # True: default seeds, False: string space seeds
+    default = False  # True: default seeds, False: string space seeds
 
     # Add avg time of appending keys to list
     avg_time = avg_runtime([].append, args=[KEY_CHARMAP])
@@ -364,14 +448,18 @@ def main():
 
     # START TEST =======================================================================================================
 
-    trials = 300000
-    estimated_time = trials * avg_time
+    num_keys = 300000
+    estimated_time = num_keys * avg_time
 
-    print(f'Generating {trials} keys')
+    print(f'Generating {num_keys} keys (with {"default integer" if default else "custom string"} seeds)')
     print('Estimated time:', estimated_time, 's', f'({estimated_time / 3600} hr)')
     print()
 
     print('Start time:', datetime.now())
+
+    if not default:
+        start_seed = next(string_space())
+        str_space = string_space()
 
     # Use a list then convert to set because lists are faster to append to, and
     # this allows us to interrupt the program and still get useful info mid-run
@@ -380,21 +468,13 @@ def main():
     try:
         if default:
             # default seeds
-            for i in range(trials):
+            for i in range(num_keys):
                 keys.append(gen_key2())
         else:
             # string space seeds
-            str_space = string_space()
-
-            start_seed = next(str_space)
-            keys.append(gen_key2(start_seed))
-
-            i = 1
-            for s in str_space:
-                if i >= trials:
-                    break
+            for i in range(num_keys):
+                s = next(str_space)
                 keys.append(gen_key2(s))
-                i += 1
     except KeyboardInterrupt:
         print(f'*** INTERRUPTED AT {i} KEYS ***')
 
@@ -410,8 +490,6 @@ def main():
     if not default:
         print('First seed:', start_seed)
         print('Last seed:', s)
-
-    return
 
 
 if __name__ == '__main__':
