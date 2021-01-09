@@ -350,8 +350,11 @@ def string_space(start_len=1, end_len=95, charset=None):
 # to remove duplicates, then the intersection between the two sets is examined to further rule
 # out duplicates.
 # WARNING: many gigabytes of memory are needed to generate lists of keys this large (roughly
-# 75 GB per list or set; given 2 lists and 2 sets, roughly 300 GB are needed)
-def billion_keys(default=True):
+# 75 GB per list or set; given 2 lists and 2 sets, roughly 300 GB are needed). Note that the
+# program may encounter a MemoryError for which there is appropriate handling.
+# This function performs two passes as described above, with a parameter for total number of
+# keys to be generated.
+def two_passes(num_keys, default=True):
     # GET AVERAGE RUNTIME
 
     # Add avg time of appending keys to list
@@ -369,8 +372,9 @@ def billion_keys(default=True):
 
     # START TEST
 
-    num_keys = 1000000000  # 1 billion
-    max_list_len = 500000000  # 500 million
+    # Since two passes of equal size are used, num_keys is ensured to be an even number
+    num_keys += 0 if num_keys % 2 == 0 else 1
+    max_list_len = num_keys // 2
 
     # NOTE: this does not account for the time it takes to convert the large lists to sets, so the
     # real time may be significantly larger than the estimated time
@@ -407,6 +411,9 @@ def billion_keys(default=True):
         except KeyboardInterrupt:
             print(f'*** INTERRUPTED AT {j + (i * max_list_len)} KEYS ***')
             break
+        except MemoryError:
+            print(f'*** MEMORY ERROR AT {j + (i * max_list_len)} KEYS ***')
+            break
         finally:
             key_sets[i] = set(keys)
 
@@ -432,6 +439,14 @@ def billion_keys(default=True):
 # https://www.ilikebigbits.com/2018_10_20_estimating_hash_collisions.html
 def main():
     default = False  # True: default seeds, False: string space seeds
+    num_keys = 300000
+
+    # Uncomment the following lines of code to test more than 536870912 keys
+    # (max size of a Python list on a 32-bit system)
+    # two_passes(num_keys, default=default)
+    # return
+
+    # GET AVERAGE RUNTIME ==============================================================================================
 
     # Add avg time of appending keys to list
     avg_time = avg_runtime([].append, args=[KEY_CHARMAP])
@@ -446,10 +461,9 @@ def main():
         str_space = string_space()
         avg_time += avg_runtime(lambda: next(str_space))
 
-    # START TEST =======================================================================================================
-
-    num_keys = 300000
     estimated_time = num_keys * avg_time
+
+    # START TEST =======================================================================================================
 
     print(f'Generating {num_keys} keys (with {"default integer" if default else "custom string"} seeds)')
     print('Estimated time:', estimated_time, 's', f'({estimated_time / 3600} hr)')
