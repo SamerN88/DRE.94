@@ -259,6 +259,10 @@ def hash_seed2(seed, size, base=M512):
 def gen_key2(seed=None, base=M512):
     # Default seed is microseconds since epoch
     if seed is None:
+        # Ensures at least 1 microsecond between consecutive key generations to ensure that
+        # the default seed has changed to avoid generating the same key consecutively
+        # (this is mainly an issue for systems with high processing power)
+        time.sleep(1e-6)
         seed = time.time_ns() // 1000
 
     charset = list(KEY_CHARMAP)
@@ -438,13 +442,13 @@ def two_passes(num_keys, default=True):
 # Finding probability of collision given a set of n keys:
 # https://www.ilikebigbits.com/2018_10_20_estimating_hash_collisions.html
 def main():
-    default = False  # True: default seeds, False: string space seeds
-    num_keys = 300000
+    default = True  # True: default seeds, False: string space seeds
+    num_keys = 100000
 
-    # Uncomment the following lines of code to test more than 536870912 keys
-    # (max size of a Python list on a 32-bit system)
-    # two_passes(num_keys, default=default)
-    # return
+    # If testing more than 536870912 keys (max size of a Python list on a 32-bit system)
+    if num_keys > 536870912:
+        two_passes(num_keys, default=default)
+        return
 
     # GET AVERAGE RUNTIME ==============================================================================================
 
