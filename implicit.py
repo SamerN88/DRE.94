@@ -3,10 +3,9 @@
 
 import os
 import traceback
-import random
 
 from global_constants import KEY_LENGTH, KEY_CHARMAP
-from radix import baseN_to_base10
+from radix import base94_to_base10
 
 
 # When this function is called, it returns the directory name of the driver file that called the DRE.94 library
@@ -43,23 +42,41 @@ def arg_check(arg, argname, argtypes):
         raise TypeError(msg)
 
 
+def shuffle(seq, key):
+    seq = list(seq)
+    max_len = len(seq)
+
+    key_num = base94_to_base10(key)
+
+    # It is practically impossible that this function will receive a sequence longer than key_num ONLY
+    # IF key is actually a DRE.94 key, as key_num would be on the order of 10**181 or more; but it is
+    # worth coding for this in the event that key is something else that would produce a small key_num
+    while key_num < max_len:
+        key_num *= key_num
+
+    shuffled = []
+    for size in range(max_len, 0, -1):
+        item = seq[key_num % size]
+        shuffled.append(item)
+        seq.remove(item)
+
+    return shuffled
+
+
 # Shuffles base-11 symbol set (0123456789 + SPACE) with key as seed
 def shuffle_base11(key):
     """Shuffles base-11 symbol set (0123456789 + SPACE) with DRE.94 key as seed."""
 
     key_error_check(key)
 
-    # Get zero symbol (0 or SPACE must be 0th symbol as they can't be first char in base-11 cipher)
-    zeros = [' ', '0']
-    random.seed(key)
-    z_index = random.randint(0, 1)
-    zero = zeros[z_index]
+    key_num = base94_to_base10(key)
+    zeros = (' ', '0')
+    zero = zeros[key_num % 2]
 
-    # Get list of non-zero symbols
-    non_zero = list('123456789' + zeros[1 - z_index])
-    random.shuffle(non_zero, random.seed(key))
+    non_zero = list('123456789' + zeros[1 - (key_num % 2)])
+    symbol_set = shuffle(non_zero, key)
 
-    return [zero] + non_zero
+    return [zero] + symbol_set
 
 
 def key_error_check(key):
@@ -84,21 +101,3 @@ def key_error_check(key):
     for ch in key:
         if ch not in KEY_CHARMAP:
             raise ValueError(msg.format(f"DRE.94 key must contain only ASCII characters 33 to 126, inclusive"))
-
-
-# Returns integer with same number of digits as 'length' to be XOR'd with base-10 cipher to obstruct it
-def get_obstructor(key):
-    """Using key as seed, returns integer (base-94 key to base-10 integer) to be XOR'd with base-10 cipher;
-    this obscures comparisons b/w same-length ciphers."""
-
-    key_error_check(key)
-
-    # Shuffle base-94 symbol set using key as seed
-    symbol_set = list(key)
-    random.seed(key)
-    random.shuffle(symbol_set)
-
-    # Convert key to base-10 integer
-    obstructor = baseN_to_base10(key, symbol_set)
-
-    return obstructor
