@@ -25,13 +25,20 @@
 # TODO: later make DRE.94 webpage, if deemed useful since Github already exists
 #   [check out https://docs.python-guide.org/writing/structure/]
 
-import random
-import time
+import time as _time
 
-# TODO: import variables/modules with a preceding underscore to hide them (e.g. import time as _time)
-from implicit import driver_cwd, arg_check, shuffle_base11, key_error_check
-from radix import baseN_to_base10, base10_to_baseN
-from global_constants import KEY_CHARMAP, KEY_LENGTH, PRINTABLE_ASCII, M512
+from implicit import (
+    driver_cwd as _driver_cwd, 
+    arg_check as _arg_check, 
+    shuffle_base11 as _shuffle_base11, 
+    key_error_check as _key_error_check, 
+    shuffle as _shuffle
+)
+from radix import (
+    baseN_to_base10 as _baseN_to_base10, 
+    base10_to_baseN as _base10_to_baseN
+)
+from global_constants import KEY_CHARMAP, KEY_LENGTH, PRINTABLE_ASCII, M512, NULL_CHAR
 
 
 def hash_seed(seed, size, base=M512):
@@ -60,7 +67,11 @@ def generate_key(seed=None):
 
     # Default seed is microseconds since epoch
     if seed is None:
-        seed = time.time_ns() // 1000
+        # Ensures at least 1 microsecond between consecutive key generations to ensure that
+        # the default seed has changed to avoid generating the same key consecutively
+        # (this is mainly an issue for systems with high processing power)
+        _time.sleep(1e-6)
+        seed = _time.time_ns() // 1000
 
     charset = list(KEY_CHARMAP)
 
@@ -91,61 +102,61 @@ def generate_key(seed=None):
 
 
 def load_plaintext(text_source, fromfile):
-    arg_check(fromfile, 'fromfile', bool)
+    _arg_check(fromfile, 'fromfile', bool)
 
     if fromfile:
         # If filename, get text from file
         try:
-            text_file = open(driver_cwd(text_source))
-            text = text_file.read()
+            text_file = open(_driver_cwd(text_source))
+            plaintext = text_file.read()
         except UnicodeDecodeError as e:
-            msg = f'{e.args[4]}\n{" " * 20}(could not read text from file: {driver_cwd(text_source)})'
+            msg = f'{e.args[4]}\n{" " * 20}(could not read text from file: {_driver_cwd(text_source)})'
             raise UnicodeDecodeError(*e.args[:4], msg)
 
     else:
         # If raw text is passed, use text_source directly as the text
-        text = text_source
+        plaintext = text_source
 
-    return text
+    return plaintext
 
 
 def load_ciphertext(cipher_source, fromfile):
-    arg_check(fromfile, 'fromfile', bool)
+    _arg_check(fromfile, 'fromfile', bool)
 
     # Determine if cipher source is filename or raw cipher
     if fromfile:
         # If filename, get cipher from text file
         try:
-            cipher_file = open(driver_cwd(cipher_source), 'r')
-            cipher = cipher_file.read().replace('\n', '').replace('\t', '').replace(' ', '')  # ignore whitespace
+            cipher_file = open(_driver_cwd(cipher_source), 'r')
+            ciphertext = cipher_file.read().replace('\n', '').replace('\t', '').replace(' ', '')  # ignore whitespace
             cipher_file.close()
         except UnicodeDecodeError as e:
-            msg = f'{e.args[4]}\n{" " * 20}(could not read text from file: {driver_cwd(cipher_source)})'
+            msg = f'{e.args[4]}\n{" " * 20}(could not read text from file: {_driver_cwd(cipher_source)})'
             raise UnicodeDecodeError(*e.args[:4], msg)
 
     else:
-        cipher = cipher_source
+        ciphertext = cipher_source
 
-    for ch in cipher:
+    for ch in ciphertext:
         if ch not in KEY_CHARMAP:
             msg = 'invalid DRE.94 cipher; all characters must be from set of ASCII codes 33 to 126'
             raise ValueError(msg)
 
-    return cipher
+    return ciphertext
 
 
 # Encrypts string with arbitrary character encoding into ASCII ciphertext
 def encrypt_UTF8(text_source, key, fromfile=False):
     """Encrypts string with arbitrary character encoding into ASCII ciphertext (using a DRE.94 key)."""
 
-    key_error_check(key)
+    _key_error_check(key)
 
     text = load_plaintext(text_source, fromfile)
     if text == '':
         return ''
 
     # Ensures text never starts with 0th digit; null character is used as dummy 0th digit in charset
-    if '\0' in text:
+    if NULL_CHAR in text:
         msg = 'null character (\\x00) forbidden in plaintext'
         raise ValueError(msg)
 
@@ -154,33 +165,32 @@ def encrypt_UTF8(text_source, key, fromfile=False):
     for ch in text:
         if ch not in charset:
             charset.append(ch)
-    random.seed(key)
-    random.shuffle(charset)
+    charset = _shuffle(charset, key)
 
-    # Convert text to base-10 integer using charset
-    base10_cipher = baseN_to_base10(text, ['\0'] + charset)  # initial null character ensures no zero digit in text
+    # Convert text to base-10 integer using charset (initial null character in charset ensures no zero digit in text)
+    base10_cipher_no_tag = _baseN_to_base10(text, [NULL_CHAR] + charset)
 
     # Get shuffled base-11 symbol set with key as seed
-    base11_symbols = shuffle_base11(key)
+    base11_symbols = _shuffle_base11(key)
 
     # Tag contains info on ords of charset (lengthens cipher, but necessary for arbitrary charset)
     tag = ' '.join(str(ord(ch)) for ch in charset)  # tag is in base-11 (0123456789 + SPACE)
 
     # Combine base-11 tag and base-10 cipher, get full base-11 cipher; then convert full base-11 cipher to base-10
-    base11_cipher = tag + ' ' + str(base10_cipher)
-    base10_cipher_with_tag = baseN_to_base10(base11_cipher, base11_symbols)
+    base11_cipher = f'{tag} {base10_cipher_no_tag}'
+    base10_cipher = _baseN_to_base10(base11_cipher, base11_symbols)
 
     # Finally, convert full base-10 cipher to base-94 with key
-    cipher = base10_to_baseN(base10_cipher_with_tag, key)
+    ciphertext = _base10_to_baseN(base10_cipher, key)
 
-    return cipher
+    return ciphertext
 
 
 # Encrypts string with ASCII character encoding into ASCII ciphertext
 def encrypt_ASCII(text_source, key, fromfile=False):
     """Encrypts ASCII string into ASCII ciphertext (using a DRE.94 key)."""
 
-    key_error_check(key)
+    _key_error_check(key)
 
     text = load_plaintext(text_source, fromfile)
     if text == '':
@@ -195,16 +205,18 @@ def encrypt_ASCII(text_source, key, fromfile=False):
     # Convert text to base-10 integer using charset
     #   - Ø char (code 216) ensures no zero digit in text
     #   - null char is inserted at start of text to indicate ASCII mode during decryption
-    base10_cipher = baseN_to_base10('\0' + text, ('Ø', '\0') + PRINTABLE_ASCII)
+    base10_cipher = _baseN_to_base10(NULL_CHAR + text, ('Ø', NULL_CHAR) + PRINTABLE_ASCII)
 
     # Finally, convert base-10 cipher to base-94 with key
-    cipher = base10_to_baseN(base10_cipher, key)
+    cipher = _base10_to_baseN(base10_cipher, key)
 
     return cipher
 
 
 # Based on character encoding of plaintext, either uses encrypt_ASCII or encrypt_UTF8
 def encrypt(text_source, key, fromfile=False):
+    _key_error_check(key)
+
     text = load_plaintext(text_source, fromfile)
 
     for ch in text:
@@ -220,28 +232,28 @@ def encrypt(text_source, key, fromfile=False):
 def decrypt(cipher_source, key, fromfile=False):
     """Decrypts ASCII ciphertext into plaintext with arbitrary character encoding (using a DRE.94 key)."""
 
-    key_error_check(key)
+    _key_error_check(key)
 
     cipher = load_ciphertext(cipher_source, fromfile)
     if cipher == '':
         return ''
 
     # Get shuffled base-11 symbol set with key as seed
-    base11_symbols = shuffle_base11(key)
+    base11_symbols = _shuffle_base11(key)
 
     # Convert base-94 cipher to base-10 integer using key
-    base10_cipher_with_tag = baseN_to_base10(cipher, key)
+    base10_cipher_with_tag = _baseN_to_base10(cipher, key)
 
-    text = base10_to_baseN(base10_cipher_with_tag, ('Ø', '\0') + PRINTABLE_ASCII)
+    text = _base10_to_baseN(base10_cipher_with_tag, ('Ø', NULL_CHAR) + PRINTABLE_ASCII)
 
     # encrypt_ASCII prepends a null character to the plaintext before encrypting
-    if text[0] == '\0':
+    if text[0] == NULL_CHAR:
         return text[1:]
 
     # If not ASCII encrypted, decipher charset ords from tag
 
     # Convert base-10 cipher to base-11 cipher, i.e. tag and text cipher
-    base11_cipher = base10_to_baseN(base10_cipher_with_tag, base11_symbols)
+    base11_cipher = _base10_to_baseN(base10_cipher_with_tag, base11_symbols)
 
     # Separate tag and base-10 cipher
     base11_cipher_split = base11_cipher.split()
@@ -253,6 +265,6 @@ def decrypt(cipher_source, key, fromfile=False):
     charset = [chr(i) for i in ords]
 
     # Get text (base-N text) using charset which was derived earlier
-    text = base10_to_baseN(base10_cipher, ['\0'] + charset)
+    text = _base10_to_baseN(base10_cipher, [NULL_CHAR] + charset)
 
     return text

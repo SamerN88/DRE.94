@@ -16,3 +16,7 @@ KEYSPACE = itertools.permutations(KEY_CHARMAP, KEY_LENGTH)
 
 # Large Mersenne prime used as a base in the seed hashing function
 M512 = 2**512 - 1
+
+# Null char takes the place of 'zero' in encryption to ensure no leading 'zeros' (zero chars) in plaintext
+# (leading zeros in plaintext disappear upon decryption)
+NULL_CHAR = '\0'
