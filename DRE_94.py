@@ -28,6 +28,7 @@
 import random
 import time
 
+# TODO: import variables/modules with a preceding underscore to hide them (e.g. import time as _time)
 from implicit import driver_cwd, arg_check, shuffle_base11, key_error_check
 from radix import baseN_to_base10, base10_to_baseN
 from global_constants import KEY_CHARMAP, KEY_LENGTH, PRINTABLE_ASCII, M512
@@ -175,6 +176,7 @@ def encrypt_UTF8(text_source, key, fromfile=False):
     return cipher
 
 
+# Encrypts string with ASCII character encoding into ASCII ciphertext
 def encrypt_ASCII(text_source, key, fromfile=False):
     """Encrypts ASCII string into ASCII ciphertext (using a DRE.94 key)."""
 
@@ -201,6 +203,7 @@ def encrypt_ASCII(text_source, key, fromfile=False):
     return cipher
 
 
+# Based on character encoding of plaintext, either uses encrypt_ASCII or encrypt_UTF8
 def encrypt(text_source, key, fromfile=False):
     text = load_plaintext(text_source, fromfile)
 
@@ -229,14 +232,15 @@ def decrypt(cipher_source, key, fromfile=False):
     # Convert base-94 cipher to base-10 integer using key
     base10_cipher_with_tag = baseN_to_base10(cipher, key)
 
-    try:
-        text = base10_to_baseN(base10_cipher_with_tag, ('Ø', '\0') + PRINTABLE_ASCII)
-        if text[0] == '\0':
-            return text[1:]
-    except:
-        raise
+    text = base10_to_baseN(base10_cipher_with_tag, ('Ø', '\0') + PRINTABLE_ASCII)
 
-    # Convert base-10 cipher to base-11 cipher, i.e. tag and text cipher (also reverse XOR with obstructor)
+    # encrypt_ASCII prepends a null character to the plaintext before encrypting
+    if text[0] == '\0':
+        return text[1:]
+
+    # If not ASCII encrypted, decipher charset ords from tag
+
+    # Convert base-10 cipher to base-11 cipher, i.e. tag and text cipher
     base11_cipher = base10_to_baseN(base10_cipher_with_tag, base11_symbols)
 
     # Separate tag and base-10 cipher
