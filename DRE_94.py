@@ -182,9 +182,9 @@ def encrypt_UTF8(text_source, key, fromfile=False):
     base10_cipher = _baseN_to_base10(base11_cipher, base11_symbols)
 
     # Finally, convert full base-10 cipher to base-94 with key
-    ciphertext = _base10_to_baseN(base10_cipher, key)
+    cipher = _base10_to_baseN(base10_cipher, key)
 
-    return ciphertext
+    return cipher
 
 
 # Encrypts string with ASCII character encoding into ASCII ciphertext
