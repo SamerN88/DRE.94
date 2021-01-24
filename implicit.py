@@ -42,23 +42,23 @@ def arg_check(arg, argname, argtypes):
         raise TypeError(msg)
 
 
+# Always returns a Python list
 def shuffle(seq, key):
-    seq = list(seq)
-    max_len = len(seq)
+    # TODO: consider relocating `generate_key` function to be able to implement this default key feature
+    # if key is None:
+    #     key = generate_key()
+
+    # This function is specific to DRE.94 keys
+    key_error_check(key)
 
     key_num = base94_to_base10(key)
 
-    # It is practically impossible that this function will receive a sequence longer than key_num ONLY
-    # IF key is actually a DRE.94 key, as key_num would be on the order of 10**181 or more; but it is
-    # worth coding for this in the event that key is something else that would produce a small key_num
-    while key_num < max_len:
-        key_num *= key_num
-
+    seq = list(seq)
     shuffled = []
-    for size in range(max_len, 0, -1):
-        item = seq[key_num % size]
-        shuffled.append(item)
-        seq.remove(item)
+    for size in range(len(seq), 0, -1):
+        idx = key_num % size
+        shuffled.append(seq[idx])
+        del seq[idx]
 
     return shuffled
 

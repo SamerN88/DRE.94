@@ -2,7 +2,7 @@
 
    Author: Samer N. Najjar (About me: https://najjarcv.imfast.io/)
    Date launched: 18 October 2019
-   Last updated: 28 December 2020
+   Last updated: 24 January 2021
 
    Keyspace size: 94! (~ 1.0873661567e+146)
 
@@ -10,20 +10,17 @@
 
 # Structure project: https://docs.python-guide.org/writing/structure/
 
-# TODO: Consider making custom exceptions? (e.g. class EncryptionError(Exception): ...)
-# TODO: consider using class? and using 'hidden' methods prepended by _ like def _key_error_check():
-#   or make DRE.94 KEY an object: class Key: def __init__(self...): ... def approx_loc_in_keyspace(self): ...
-#       so then edit int() representation: def __int__(self): return base94_to_base10(self.__str__())
-#   or make the whole project an object: class DRE_94: ... DRE_94.KEY_LENGTH, DRE_94.get_keyspace(), ...
-#   OR NO NEED FOR THIS EXTRA ABSTRACTION? JUST RAW FUNCTIONS WILL SUFFICE
 # TODO: TWEAK COLLISION TEST TO FIND SEEDS THAT COLLIDE
 # TODO: update docstrings to describe parameters and return values and their types
 # TODO: consider how to access all methods from DRE.94 as such (might have to restructure library):
 #   [SUBJECT TO CHANGE]
 #   DRE_94.<method> for all main cryptographic functionality
 #   DRE_94.<module>.<method> for all ancillary functionality (like base-conversion)
-# TODO: later make DRE.94 webpage, if deemed useful since Github already exists
+# TODO: later make DRE.94 webpage, if deemed useful since Github already exists (useful for CV)
 #   [check out https://docs.python-guide.org/writing/structure/]
+
+# TODO: investigate whether base is just required to be the next prime after 94! (keyspace size)
+
 
 import time as _time
 
@@ -36,7 +33,7 @@ from implicit import (
 )
 from radix import (
     baseN_to_base10 as _baseN_to_base10, 
-    base10_to_baseN as _base10_to_baseN
+    base10_to_baseN as _base10_to_baseN,
 )
 from global_constants import KEY_CHARMAP, KEY_LENGTH, PRINTABLE_ASCII, M512, NULL_CHAR
 
@@ -203,10 +200,14 @@ def encrypt_ASCII(text_source, key, fromfile=False):
             msg = 'plaintext must be printable ASCII (codes 9-13, 32-126)'
             raise ValueError(msg)
 
+    # Shuffle ASCII symbol set to prevent one-to-one char comparison between
+    # ciphers that used different keys but same plaintext
+    shuffled_ascii = _shuffle(PRINTABLE_ASCII, key)
+
     # Convert plaintext to base-10 integer using charset
     #   - Ø char (code 216) ensures no zero digit in plaintext
     #   - null char is inserted at start of plaintext to indicate ASCII mode during decryption
-    base10_cipher = _baseN_to_base10(NULL_CHAR + plaintext, ('Ø', NULL_CHAR) + PRINTABLE_ASCII)
+    base10_cipher = _baseN_to_base10(NULL_CHAR + plaintext, ['Ø', NULL_CHAR] + shuffled_ascii)
 
     # Finally, convert base-10 cipher to base-94 with key
     cipher = _base10_to_baseN(base10_cipher, key)
@@ -245,13 +246,19 @@ def decrypt(cipher_source, key, fromfile=False):
     # Convert base-94 cipher to base-10 integer using key
     base10_cipher_with_tag = _baseN_to_base10(cipher, key)
 
-    plaintext = _base10_to_baseN(base10_cipher_with_tag, ('Ø', NULL_CHAR) + PRINTABLE_ASCII)
+    # ----- Assume plaintext was ASCII encrypted -----
+
+    # ASCII symbol set was shuffled in encryption to prevent one-to-one char comparison
+    # between ciphers that used different keys but same plaintext
+    shuffled_ascii = _shuffle(PRINTABLE_ASCII, key)
+
+    plaintext = _base10_to_baseN(base10_cipher_with_tag, ['Ø', NULL_CHAR] + shuffled_ascii)
 
     # encrypt_ASCII prepends a null character to the plaintext before encrypting
     if plaintext[0] == NULL_CHAR:
         return plaintext[1:]
 
-    # If not ASCII encrypted, decipher charset ords from tag
+    # ----- If not ASCII encrypted, decipher charset ords from tag -----
 
     # Convert base-10 cipher to base-11 cipher, i.e. tag and text cipher
     base11_cipher = _base10_to_baseN(base10_cipher_with_tag, base11_symbols)
