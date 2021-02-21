@@ -19,7 +19,7 @@
 # TODO: later make DRE.94 webpage, if deemed useful since Github already exists (useful for CV)
 #   [check out https://docs.python-guide.org/writing/structure/]
 
-# TODO: investigate whether base is just required to be the next prime after 94! (keyspace size)
+# TODO: investigate whether base is just required to be the next prime after 1114111 (max Unicode)
 
 
 import time as _time
@@ -240,11 +240,8 @@ def decrypt(cipher_source, key, fromfile=False):
     if cipher == '':
         return ''
 
-    # Get shuffled base-11 symbol set with key as seed
-    base11_symbols = _shuffle_base11(key)
-
     # Convert base-94 cipher to base-10 integer using key
-    base10_cipher_with_tag = _baseN_to_base10(cipher, key)
+    base10_cipher = _baseN_to_base10(cipher, key)
 
     # ----- Assume plaintext was ASCII encrypted -----
 
@@ -252,7 +249,7 @@ def decrypt(cipher_source, key, fromfile=False):
     # between ciphers that used different keys but same plaintext
     shuffled_ascii = _shuffle(PRINTABLE_ASCII, key)
 
-    plaintext = _base10_to_baseN(base10_cipher_with_tag, ['Ø', NULL_CHAR] + shuffled_ascii)
+    plaintext = _base10_to_baseN(base10_cipher, ['Ø', NULL_CHAR] + shuffled_ascii)
 
     # encrypt_ASCII prepends a null character to the plaintext before encrypting
     if plaintext[0] == NULL_CHAR:
@@ -260,19 +257,22 @@ def decrypt(cipher_source, key, fromfile=False):
 
     # ----- If not ASCII encrypted, decipher charset ords from tag -----
 
+    # Get shuffled base-11 symbol set with key as seed
+    base11_symbols = _shuffle_base11(key)
+
     # Convert base-10 cipher to base-11 cipher, i.e. tag and text cipher
-    base11_cipher = _base10_to_baseN(base10_cipher_with_tag, base11_symbols)
+    base11_cipher = _base10_to_baseN(base10_cipher, base11_symbols)
 
     # Separate tag and base-10 cipher
     base11_cipher_split = base11_cipher.split()
     tag_list = base11_cipher_split[:-1]
-    base10_cipher = int(base11_cipher_split[-1])
+    base10_cipher_no_tag = int(base11_cipher_split[-1])
 
     # From tag, get ords of plaintext charset, then build charset with ords
     ords = [int(i) for i in tag_list]
     charset = [chr(i) for i in ords]
 
     # Get plaintext (base-N text) using charset which was derived earlier
-    plaintext = _base10_to_baseN(base10_cipher, [NULL_CHAR] + charset)
+    plaintext = _base10_to_baseN(base10_cipher_no_tag, [NULL_CHAR] + charset)
 
     return plaintext
