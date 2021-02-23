@@ -117,22 +117,22 @@ def load_plaintext(text_source, fromfile):
     return plaintext
 
 
-def load_ciphertext(cipher_source, fromfile):
+def load_ciphertext(text_source, fromfile):
     _arg_check(fromfile, 'fromfile', bool)
 
     # Determine if cipher source is filename or raw cipher
     if fromfile:
         # If filename, get cipher from text file
         try:
-            cipher_file = open(_driver_cwd(cipher_source), 'r')
+            cipher_file = open(_driver_cwd(text_source), 'r')
             ciphertext = cipher_file.read().replace('\n', '').replace('\t', '').replace(' ', '')  # ignore whitespace
             cipher_file.close()
         except UnicodeDecodeError as e:
-            msg = f'{e.args[4]}\n{" " * 20}(could not read text from file: {_driver_cwd(cipher_source)})'
+            msg = f'{e.args[4]}\n{" " * 20}(could not read text from file: {_driver_cwd(text_source)})'
             raise UnicodeDecodeError(*e.args[:4], msg)
 
     else:
-        ciphertext = cipher_source
+        ciphertext = text_source
 
     for ch in ciphertext:
         if ch not in KEY_CHARMAP:
@@ -143,7 +143,7 @@ def load_ciphertext(cipher_source, fromfile):
 
 
 # Encrypts string with arbitrary character encoding into ASCII ciphertext
-def encrypt_UTF8(text_source, key, fromfile=False):
+def encrypt(text_source, key, fromfile=False):
     """Encrypts string with arbitrary character encoding into ASCII ciphertext (using a DRE.94 key)."""
 
     _key_error_check(key)
@@ -152,27 +152,39 @@ def encrypt_UTF8(text_source, key, fromfile=False):
     if plaintext == '':
         return ''
 
-    # Ensures plaintext never starts with 0th digit; null character is used as dummy 0th digit in charset
-    if NULL_CHAR in plaintext:
-        msg = 'null character (\\x00) forbidden in plaintext'
+    # Ensures plaintext never starts with 0th digit; null character is used as dummy 0th digit in charset.
+    # The null character can be encrypted, but it can not be the leading character in plaintext because
+    # it is set as the 0th digit for all ciphers, and leading zero digits vanish upon decryption
+    if plaintext[0] == NULL_CHAR:
+        msg = 'null character (\\x00) forbidden as leading character in plaintext'
         raise ValueError(msg)
 
-    # Get set of distinct chars in plaintext to be used as numbering system (not using set() b/c it's inconsistent)
+    # Get set of distinct chars in plaintext to be used as digits (numbering system)
+    # (not using set() b/c it's inconsistent)
     charset = []
     for ch in plaintext:
         if ch not in charset:
             charset.append(ch)
+
+    # Shuffle charset (symbol set) to prevent one-to-one char comparison between
+    # ciphers that used different keys but same plaintext
     charset = _shuffle(charset, key)
 
-    # Convert plaintext to base-10 integer using charset
-    # (initial null character in charset ensures no zero digit in plaintext)
+    # Since the null char is added later as the 0th digit, it must be removed from this charset if present
+    if NULL_CHAR in charset:
+        charset.remove(NULL_CHAR)
+
+    # Convert plaintext to base-10 integer using charset. Prepend null char to charset because:
+    #   - leading zero digits in plaintext vanish upon decryption
+    #   - null char is forbidden as leading character in plaintext when encrypting
+    #   - hence, initial null char in charset ensures no leading zero digits in plaintext
     base10_cipher_no_tag = _baseN_to_base10(plaintext, [NULL_CHAR] + charset)
 
-    # Get shuffled base-11 symbol set with key as seed
-    base11_symbols = _shuffle_base11(key)
-
-    # Tag contains info on ords of charset (lengthens cipher, but necessary for arbitrary charset)
+    # Tag contains ords of charset (lengthens cipher, but necessary for arbitrary character encoding)
     tag = ' '.join(str(ord(ch)) for ch in charset)  # tag is in base-11 (0123456789 + SPACE)
+
+    # Get shuffled base-11 symbol set with key as seed (shuffled to further obscure cipher)
+    base11_symbols = _shuffle_base11(key)
 
     # Combine base-11 tag and base-10 cipher, get full base-11 cipher; then convert full base-11 cipher to base-10
     base11_cipher = f'{tag} {base10_cipher_no_tag}'
@@ -182,52 +194,6 @@ def encrypt_UTF8(text_source, key, fromfile=False):
     cipher = _base10_to_baseN(base10_cipher, key)
 
     return cipher
-
-
-# Encrypts string with ASCII character encoding into ASCII ciphertext
-def encrypt_ASCII(text_source, key, fromfile=False):
-    """Encrypts ASCII string into ASCII ciphertext (using a DRE.94 key)."""
-
-    _key_error_check(key)
-
-    plaintext = load_plaintext(text_source, fromfile)
-    if plaintext == '':
-        return ''
-
-    # Ensures plaintext is printable ASCII
-    for ch in plaintext:
-        if ch not in PRINTABLE_ASCII:
-            msg = 'plaintext must be printable ASCII (codes 9-13, 32-126)'
-            raise ValueError(msg)
-
-    # Shuffle ASCII symbol set to prevent one-to-one char comparison between
-    # ciphers that used different keys but same plaintext
-    shuffled_ascii = _shuffle(PRINTABLE_ASCII, key)
-
-    # Convert plaintext to base-10 integer using charset
-    #   - Ø char (code 216) ensures no zero digit in plaintext
-    #   - null char is inserted at start of plaintext to indicate ASCII mode during decryption
-    base10_cipher = _baseN_to_base10(NULL_CHAR + plaintext, ['Ø', NULL_CHAR] + shuffled_ascii)
-
-    # Finally, convert base-10 cipher to base-94 with key
-    cipher = _base10_to_baseN(base10_cipher, key)
-
-    return cipher
-
-
-# Based on character encoding of plaintext, either uses encrypt_ASCII or encrypt_UTF8
-def encrypt(text_source, key, fromfile=False):
-    _key_error_check(key)
-
-    plaintext = load_plaintext(text_source, fromfile)
-
-    for ch in plaintext:
-        if ch not in PRINTABLE_ASCII:
-            # If not all chars are printable ASCII, encrypt as UTF-8
-            return encrypt_UTF8(plaintext, key)
-
-    # If all chars are printable ASCII, encrypt as such
-    return encrypt_ASCII(plaintext, key)
 
 
 # Decrypts ASCII ciphertext into plaintext with arbitrary character encoding
@@ -243,36 +209,75 @@ def decrypt(cipher_source, key, fromfile=False):
     # Convert base-94 cipher to base-10 integer using key
     base10_cipher = _baseN_to_base10(cipher, key)
 
-    # ----- Assume plaintext was ASCII encrypted -----
-
-    # ASCII symbol set was shuffled in encryption to prevent one-to-one char comparison
-    # between ciphers that used different keys but same plaintext
-    shuffled_ascii = _shuffle(PRINTABLE_ASCII, key)
-
-    plaintext = _base10_to_baseN(base10_cipher, ['Ø', NULL_CHAR] + shuffled_ascii)
-
-    # encrypt_ASCII prepends a null character to the plaintext before encrypting
-    if plaintext[0] == NULL_CHAR:
-        return plaintext[1:]
-
-    # ----- If not ASCII encrypted, decipher charset ords from tag -----
-
     # Get shuffled base-11 symbol set with key as seed
     base11_symbols = _shuffle_base11(key)
 
-    # Convert base-10 cipher to base-11 cipher, i.e. tag and text cipher
+    # Convert base-10 cipher to base-11 cipher to get the tag and message portions of the cipher
     base11_cipher = _base10_to_baseN(base10_cipher, base11_symbols)
 
-    # Separate tag and base-10 cipher
+    # Separate tag and message portions of the cipher
     base11_cipher_split = base11_cipher.split()
     tag_list = base11_cipher_split[:-1]
     base10_cipher_no_tag = int(base11_cipher_split[-1])
 
     # From tag, get ords of plaintext charset, then build charset with ords
-    ords = [int(i) for i in tag_list]
+    ords = map(int, tag_list)
     charset = [chr(i) for i in ords]
 
     # Get plaintext (base-N text) using charset which was derived earlier
     plaintext = _base10_to_baseN(base10_cipher_no_tag, [NULL_CHAR] + charset)
+
+    return plaintext
+
+
+# Encrypts string with ASCII character encoding into ASCII ciphertext
+def encrypt_ASCII(text_source, key, fromfile=False):
+    """Encrypts ASCII string into ASCII ciphertext (using a DRE.94 key)."""
+
+    _key_error_check(key)
+
+    plaintext = load_plaintext(text_source, fromfile)
+    if plaintext == '':
+        return ''
+
+    # Ensures plaintext is printable ASCII
+    for ch in plaintext:
+        if ch not in PRINTABLE_ASCII:
+            msg = 'plaintext characters must be printable ASCII (codes 9-13, 32-126)'
+            raise ValueError(msg)
+
+    # Shuffle ASCII symbol set to prevent one-to-one char comparison between
+    # ciphers that used different keys but same plaintext
+    shuffled_ascii = _shuffle(PRINTABLE_ASCII, key)
+
+    # Convert plaintext to base-10 integer using charset. Prepend null char to charset because:
+    #   - leading zero digits in plaintext vanish upon decryption
+    #   - null char is forbidden in plaintext when encrypting
+    #   - hence, initial null char in charset ensures no leading zero digits in plaintext
+    base10_cipher = _baseN_to_base10(plaintext, [NULL_CHAR] + shuffled_ascii)
+
+    # Finally, convert base-10 cipher to base-94 with key
+    cipher = _base10_to_baseN(base10_cipher, key)
+
+    return cipher
+
+
+def decrypt_ASCII(cipher_source, key, fromfile=False):
+    """Decrypts ASCII ciphertext into ASCII plaintext (using a DRE.94 key)."""
+
+    _key_error_check(key)
+
+    cipher = load_ciphertext(cipher_source, fromfile)
+    if cipher == '':
+        return ''
+
+    # Convert base-94 cipher to base-10 integer using key
+    base10_cipher = _baseN_to_base10(cipher, key)
+
+    # Get shuffled ASCII symbol set
+    shuffled_ascii = _shuffle(PRINTABLE_ASCII, key)
+
+    # Get plaintext (base-100 text) using shuffled ASCII charset
+    plaintext = _base10_to_baseN(base10_cipher, [NULL_CHAR] + shuffled_ascii)
 
     return plaintext

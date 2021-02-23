@@ -5,19 +5,30 @@ import random
 import time
 
 from datetime import datetime
-from DRE_94 import generate_key, encrypt, decrypt
-from global_constants import KEY_LENGTH, KEYSPACE_SIZE
+from DRE_94 import generate_key, encrypt, decrypt, encrypt_ASCII, decrypt_ASCII
+from global_constants import KEY_LENGTH, KEYSPACE_SIZE, NULL_CHAR
 from key_ops import get_keyspace, approx_loc_in_keyspace
 from implicit import key_error_check, arg_check
 from radix import base94_to_base10
 
 
 # Tests reliability of algorithm by checking if decrypted values match original values, for any number of trials
-def reliance_test(trials=10, verbose=False):
+def reliance_test(trials=10, ascii_mode=False, verbose=False):
     """Tests reliability of algorithm by checking if decrypted strings match original
     strings for any number of trials."""
 
+    arg_check(ascii_mode, 'ascii_mode', bool)
     arg_check(verbose, 'verbose', bool)
+
+    # If ASCII mode is on, use the ASCII functions
+    if ascii_mode:
+        enc = encrypt_ASCII
+        dec = decrypt_ASCII
+        ord_range = (32, 126)
+    else:
+        enc = encrypt
+        dec = decrypt
+        ord_range = (1, 500)
 
     # If verbose is on, vprint is same as default print; if verbose is off, vprint is a do-nothing function
     if verbose:
@@ -38,17 +49,21 @@ def reliance_test(trials=10, verbose=False):
     fail_status = 'FAIL'
     pass_status = 'PASS'
 
-    # First try edge cases
+    # Define edge cases
     edge_cases = [
         ('a', 'Single character'),
         ('a'*100, 'String with one distinct character'),
-        ('', 'Empty string'),
+        ('', 'Empty string')
     ]
+    if not ascii_mode:  # if not ASCII mode, add an edge case for null char
+        edge_cases.append((f'null char {NULL_CHAR}', 'Non-leading null char'))
+
+    # First try edge cases
     vprint(f'EDGE CASES ({len(edge_cases)}):\n')
     for text, description in edge_cases:
         key = generate_key()
-        cipher = encrypt(text, key)
-        d_text = decrypt(cipher, key)
+        cipher = enc(text, key)
+        d_text = dec(cipher, key)
 
         vprint(pad2 + description)
         vprint(key_prompt, key)
@@ -61,14 +76,14 @@ def reliance_test(trials=10, verbose=False):
             vprint(verdict_prompt, fail_status)
             return False
 
-    # Then run random trials (which include non-ASCII strings)
+    # Then run random trials (which include non-ASCII strings, unless in ASCII mode)
     vprint(f'RANDOMIZED TRIALS ({trials}):\n')
     for i in range(trials):
         key = generate_key()
-        length = random.randint(0, 500)
-        text = ''.join(chr(random.randint(1, 500)) for _ in range(length))
-        cipher = encrypt(text, key)
-        d_text = decrypt(cipher, key)
+        length = random.randint(1, 500)
+        text = ''.join(chr(random.randint(*ord_range)) for _ in range(length))
+        cipher = enc(text, key)
+        d_text = dec(cipher, key)
 
         vprint(trial_prompt, i+1, sep='')
         vprint(key_prompt, key)
