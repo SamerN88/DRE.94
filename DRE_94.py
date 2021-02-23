@@ -35,7 +35,7 @@ from radix import (
     baseN_to_base10 as _baseN_to_base10, 
     base10_to_baseN as _base10_to_baseN,
 )
-from global_constants import KEY_CHARMAP, KEY_LENGTH, PRINTABLE_ASCII, M512, NULL_CHAR
+from global_constants import KEY_CHARSET, KEY_LENGTH, PRINTABLE_ASCII, M512, NULL_CHAR
 
 
 def hash_seed(seed, size, base=M512):
@@ -70,7 +70,7 @@ def generate_key(seed=None):
         _time.sleep(1e-6)
         seed = _time.time_ns() // 1000
 
-    charset = list(KEY_CHARMAP)
+    charset = list(KEY_CHARSET)
 
     # First pass generates intermediate key
     intermediate = []
@@ -135,7 +135,7 @@ def load_ciphertext(text_source, fromfile):
         ciphertext = text_source
 
     for ch in ciphertext:
-        if ch not in KEY_CHARMAP:
+        if ch not in KEY_CHARSET:
             msg = 'invalid DRE.94 cipher; all characters must be from set of ASCII codes 33 to 126'
             raise ValueError(msg)
 

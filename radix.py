@@ -1,14 +1,14 @@
 """Functions for base conversion."""
 
 
-from global_constants import KEY_CHARMAP
+from global_constants import KEY_CHARSET
 
 
 # Converts base-10 integer to base-94 representation with KEY_CHARMAP as fixed numbering system
 def base10_to_base94(integer: int) -> str:
     """Converts base-10 integer to base-94 string representation, using ASCII characters 33 to 126 as symbol set."""
 
-    symbol_set = KEY_CHARMAP
+    symbol_set = KEY_CHARSET
     base = 94
 
     # Negative forbidden to eliminate symbol ambiguity
@@ -38,7 +38,7 @@ def base94_to_base10(base94: str) -> int:
         i = 0
         for digit in base94:
             pos = (length-1) - i
-            denomination = KEY_CHARMAP.index(digit)
+            denomination = KEY_CHARSET.index(digit)
             result += denomination * (94 ** pos)
             i += 1
 

@@ -265,7 +265,7 @@ def gen_key2(seed=None, base=M512):
         time.sleep(1e-6)
         seed = time.time_ns() // 1000
 
-    charset = list(KEY_CHARMAP)
+    charset = list(KEY_CHARSET)
 
     # First pass generates intermediate key
     intermediate = []
@@ -362,7 +362,7 @@ def two_passes(num_keys, default=True):
     # GET AVERAGE RUNTIME
 
     # Add avg time of appending keys to list
-    avg_time = avg_runtime([].append, args=[KEY_CHARMAP])
+    avg_time = avg_runtime([].append, args=[KEY_CHARSET])
     if default:
         # Add avg time of generating keys with default int seeds
         avg_time += avg_runtime(gen_key2)
@@ -453,7 +453,7 @@ def main():
     # GET AVERAGE RUNTIME ==============================================================================================
 
     # Add avg time of appending keys to list
-    avg_time = avg_runtime([].append, args=[KEY_CHARMAP])
+    avg_time = avg_runtime([].append, args=[KEY_CHARSET])
     if default:
         # Add avg time of generating keys with default int seeds
         avg_time += avg_runtime(gen_key2)

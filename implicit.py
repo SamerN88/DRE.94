@@ -4,7 +4,7 @@
 import os
 import traceback
 
-from global_constants import KEY_LENGTH, KEY_CHARMAP
+from global_constants import KEY_LENGTH, KEY_CHARSET
 from radix import base94_to_base10
 
 
@@ -99,5 +99,5 @@ def key_error_check(key):
 
     # Check that key uses KEY_CHARMAP characters (ASCII 33 to 126)
     for ch in key:
-        if ch not in KEY_CHARMAP:
+        if ch not in KEY_CHARSET:
             raise ValueError(msg.format(f"DRE.94 key must contain only ASCII characters 33 to 126, inclusive"))

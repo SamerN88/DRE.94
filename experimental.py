@@ -7,7 +7,7 @@ import time
 from datetime import datetime
 from DRE_94 import generate_key, encrypt, decrypt, encrypt_ASCII, decrypt_ASCII
 from global_constants import KEY_LENGTH, KEYSPACE_SIZE, NULL_CHAR
-from key_ops import get_keyspace, approx_loc_in_keyspace
+from key_ops import get_keyspace, approx_loc_in_keyspace, get_int_seed
 from implicit import key_error_check, arg_check
 from radix import base94_to_base10
 
@@ -161,7 +161,7 @@ def brute_force(key=None, time_limit=None, verbose=True):
     percent = (count / KEYSPACE_SIZE) * 100
 
     # Report
-    vprint('\n' + ('*' if success else '-') * KEY_LENGTH)
+    vprint('\n' + ('+' if success else '-') * KEY_LENGTH)
     if success:
         vprint('<< BRUTE-FORCE COMPLETE >>'.center(KEY_LENGTH))
         vprint('\nTime elapsed:')
@@ -173,7 +173,7 @@ def brute_force(key=None, time_limit=None, verbose=True):
     vprint(count)
     vprint('\nPercentage of keyspace tried:')
     vprint(percent, ' %' if 'e' in str(percent) else '%', sep='')
-    vprint(('*' if success else '-') * KEY_LENGTH)
+    vprint(('+' if success else '-') * KEY_LENGTH)
 
     vprint('\nEnd DRE.94 brute force:', end_datetime)
 
@@ -181,19 +181,29 @@ def brute_force(key=None, time_limit=None, verbose=True):
 
 
 # Unlike brute_force, which iterates over the keyspace successively, collision_test randomly tests keys
-def collision_test(key=None, time_limit=None, verbose=True):
-    """Randomly generates keys until one equals a random fixed key (essentially a
-    Bogosort); user has the option to pass a fixed key. This function is verbose by
-    default (verbose mode can be switched off)."""
+def collision_test(seed=None, interval=(0, KEYSPACE_SIZE-1), verbose=True):
+    """Iterates over integer input space (seeds) from 0 to KEYSPACE_SIZE - 1 (equal to 94! - 1) and tries to
+    find a collision within that space, given a seed. User has the option to specify a seed, otherwise a
+    random seed is used. The reason for this input range is that integer seeds collide at intervals of 94!,
+    so we are only interested in finding collisions that deviate from this known result. This function is
+    verbose by default (verbose mode can be switched off)."""
 
-    if key is None:
-        key = generate_key()
+    if seed is None:
+        seed = random.randint(0, KEYSPACE_SIZE - 1)
+        key = generate_key(seed)
     else:
-        key_error_check(key)
+        key = generate_key(seed)
+
+    if isinstance(seed, str):
+        int_seed = get_int_seed(seed) % KEYSPACE_SIZE
+    else:
+        int_seed = seed
 
     arg_check(verbose, 'verbose', bool)
-    if time_limit is not None:
-        arg_check(time_limit, 'time_limit', (float, int))
+
+    if interval[0] > interval[1]:
+        msg = 'invalid interval; lower bound cannot be larger than upper bound'
+        raise ValueError(msg)
 
     # If verbose is on, vprint is same as default print; if verbose is off, vprint is a do-nothing function
     if verbose:
@@ -204,41 +214,55 @@ def collision_test(key=None, time_limit=None, verbose=True):
     start_datetime = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
 
     vprint('Start DRE.94 collision test:', start_datetime)
-    vprint('\nKey used:')
+    vprint('\nSeed used:')
+    vprint(seed)
+    vprint('\nCorresponding key:')
     vprint(key)
 
-    # Randomly generate keys until one equals fixed key (this is the collision testing part)
-    count = 1  # count will not increment inside while-loop if collision, so must increment before checking key
-    success = True
     t1 = time.time()
-    if time_limit is None:
-        while key != generate_key():
-            count += 1
+    collision = None
+    for i in range(interval[0], interval[1] + 1):
+        # Skip the seed itself, as it is trivial; it collides with itself
+        if i == int_seed:
+            continue
 
-    # Separate for-loop for stop_after so the runtime of the extra if-statement isn't wasted in the first for-loop
-    else:
-        while key != generate_key():
-            if time.time() - t1 >= time_limit:
-                success = False
-                break
-            count += 1
+        if generate_key(i) == key:
+            collision = i
+            break
 
     elapsed = time.time() - t1
     end_datetime = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
 
+    vprint('\n' + ('+' if collision else '-') * KEY_LENGTH)
+
     # Report
-    vprint('\n' + ('*' if success else '-') * KEY_LENGTH)
-    if success:
-        vprint('<< COLLISION ENCOUNTERED >>'.center(KEY_LENGTH))
+    if collision is None:
+        # Just for convenience of display
+        start, end = interval
+        for j in range(-5000, 5001):  # arbitrary range
+            if start == KEYSPACE_SIZE + j:
+                start = '94!' + ('' if j == 0 else f' {"-" if j < 0 else "+"} {abs(j)}')
+
+        for j in range(-5000, 5001):  # arbitrary range
+            if end == KEYSPACE_SIZE + j:
+                end = '94!' + ('' if j == 0 else f' {"-" if j < 0 else "+"} {abs(j)}')
+
+        vprint(f'NO COLLISION FOUND IN THE INPUT SPACE INTERVAL [{start}, {end}].')
+
+        interval_size = interval[1] - interval[0] + 1
+        if interval_size == KEYSPACE_SIZE:
+            print('\nINTERVAL SPANS KEYSPACE SIZE; THIS SEED IS AS SAFE AS POSSIBLE.')
+
+    else:
+        vprint('<< COLLISION FOUND >>'.center(KEY_LENGTH))
+        vprint('\nCollision seed (integer):')
+        vprint(collision)
         vprint('\nTime elapsed:')
         vprint(elapsed, 'seconds')
-    else:
-        vprint(f'NO COLLISION ENCOUNTERED IN {time_limit} SECOND{"" if time_limit == 1 else "S"}')
+        vprint('\nTHIS SEED IS NOT AS SAFE AS POSSIBLE.')
 
-    vprint('\nNumber of random keys tried (not necessarily distinct keys):')
-    vprint(count)
-    vprint(('*' if success else '-') * KEY_LENGTH)
+    vprint(('+' if collision else '-') * KEY_LENGTH)
 
     vprint('\nEnd DRE.94 collision test:', end_datetime)
 
-    return success
+    return collision

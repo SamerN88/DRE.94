@@ -1,7 +1,7 @@
 """Functions that operate on a key or relate to keyspace."""
 
 import itertools
-from global_constants import KEY_LENGTH, KEY_CHARMAP
+from global_constants import KEY_LENGTH, KEY_CHARSET, M512
 from radix import base94_to_base10
 from implicit import key_error_check
 
@@ -24,7 +24,7 @@ def is_key(key):
 
     # Check that key uses KEY_CHARMAP characters (ASCII 33 to 126)
     for ch in key:
-        if ch not in KEY_CHARMAP:
+        if ch not in KEY_CHARSET:
             return False
 
     return True
@@ -37,8 +37,8 @@ def approx_loc_in_keyspace(key):
 
     key_error_check(key)
 
-    kmin = base94_to_base10(KEY_CHARMAP)
-    kmax = base94_to_base10(KEY_CHARMAP[::-1])
+    kmin = base94_to_base10(KEY_CHARSET)
+    kmax = base94_to_base10(KEY_CHARSET[::-1])
 
     return (base94_to_base10(key) - kmin) / (kmax - kmin)
 
@@ -47,4 +47,9 @@ def approx_loc_in_keyspace(key):
 def get_keyspace():
     """Returns a Python generator for all possible DRE.94 keys as lists of characters instead of strings."""
 
-    return itertools.permutations(KEY_CHARMAP, KEY_LENGTH)
+    return itertools.permutations(KEY_CHARSET, KEY_LENGTH)
+
+
+# Converts a string seed into its integer counterpart; the string seed and the integer seed cause a collision
+def get_int_seed(str_seed):
+    return sum(ord(ch) * (M512**i) for i, ch in enumerate(str_seed))
