@@ -214,7 +214,7 @@ def collision_test(seed=None, interval=(0, KEYSPACE_SIZE-1), verbose=True):
     start_datetime = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
 
     vprint('Start DRE.94 collision test:', start_datetime)
-    vprint('\nSeed used:')
+    vprint(f'\nSeed used ({"integer" if isinstance(seed, int) else "string"}):')
     vprint(seed)
     vprint('\nCorresponding key:')
     vprint(key)
