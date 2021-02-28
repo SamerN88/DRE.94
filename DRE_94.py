@@ -10,7 +10,6 @@
 
 # Structure project: https://docs.python-guide.org/writing/structure/
 
-# TODO: TWEAK COLLISION TEST TO FIND SEEDS THAT COLLIDE
 # TODO: update docstrings to describe parameters and return values and their types
 # TODO: consider how to access all methods from DRE.94 as such (might have to restructure library):
 #   [SUBJECT TO CHANGE]
@@ -20,6 +19,10 @@
 #   [check out https://docs.python-guide.org/writing/structure/]
 
 # TODO: investigate whether base is just required to be the next prime after 1114111 (max Unicode)
+# TODO: restructure encryption to encrypt in blocks of fixed length (much faster)
+#   Compare times of encrypting string of length 100000:
+#       encrypt: 810.3935477733612 sec
+#       split_encrypt: 1.0521080493927002 sec
 
 
 import time as _time

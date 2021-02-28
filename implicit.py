@@ -44,10 +44,6 @@ def arg_check(arg, argname, argtypes):
 
 # Always returns a Python list
 def shuffle(seq, key):
-    # TODO: consider relocating `generate_key` function to be able to implement this default key feature
-    # if key is None:
-    #     key = generate_key()
-
     # This function is specific to DRE.94 keys
     key_error_check(key)
 
