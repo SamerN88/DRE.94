@@ -183,10 +183,10 @@ def brute_force(key=None, time_limit=None, verbose=True):
 # Unlike brute_force, which iterates over the keyspace successively, collision_test randomly tests keys
 def collision_test(seed=None, interval=(0, KEYSPACE_SIZE-1), verbose=True):
     """Iterates over integer input space (seeds) from 0 to KEYSPACE_SIZE - 1 (equal to 94! - 1) and tries to
-    find a collision within that space, given a seed. User has the option to specify a seed, otherwise a
-    random seed is used. The reason for this input range is that integer seeds collide at intervals of 94!,
-    so we are only interested in finding collisions that deviate from this known result. This function is
-    verbose by default (verbose mode can be switched off)."""
+    find a collision within that space, given a seed (user can specify both seed and interval). The reason for
+    this default input range is that integer seeds collide at intervals of 94!, so we are only interested in
+    finding collisions that deviate from this known result, i.e. collisions that exist within the range
+    [0, 94! - 1]. This function is verbose by default (verbose mode can be switched off)."""
 
     if seed is None:
         seed = random.randint(0, KEYSPACE_SIZE - 1)

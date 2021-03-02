@@ -24,8 +24,15 @@
 #       encrypt: 810.3935477733612 sec
 #       split_encrypt: 1.0521080493927002 sec
 
+# FIXME: BIG ISSUE where keyspace is not fully accessible; let H=91! (hash space). We know seed(0) collides with
+#        seed(-1), seed(-2), seed(-3), and seed(-5), so therefore seed(0) also collides with
+#        seed(H-1), seed(H-2), seed(H-3), and seed(H-5). This means that the set of H seeds from 0 to H-1, which
+#        should access all H keys, actually has access to only H-4 keys. So there are at least 4 keys which cannot be
+#        accessed with the current generate_key function. (the older alternative of using only 1 pass instead of 2
+#        is not ideal, as close seeds produce systematically close keys)
 
-import time as _time
+
+import secrets as _secrets
 
 from implicit import (
     driver_cwd as _driver_cwd, 
@@ -38,7 +45,7 @@ from radix import (
     baseN_to_base10 as _baseN_to_base10, 
     base10_to_baseN as _base10_to_baseN,
 )
-from global_constants import KEY_CHARSET, KEY_LENGTH, PRINTABLE_ASCII, M512, NULL_CHAR
+from global_constants import KEY_CHARSET, KEY_LENGTH, KEYSPACE_SIZE, PRINTABLE_ASCII, M512, NULL_CHAR
 
 
 def hash_seed(seed, size, base=M512):
@@ -65,13 +72,9 @@ def hash_seed(seed, size, base=M512):
 def generate_key(seed=None):
     """Generates a DRE.94 key: string of length 94 with distinct characters, using ASCII characters 33-126."""
 
-    # Default seed is microseconds since epoch
+    # Default seed is randomly chosen from range(0, KEYSPACE_SIZE)
     if seed is None:
-        # Ensures at least 1 microsecond between consecutive key generations to ensure that
-        # the default seed has changed to avoid generating the same key consecutively
-        # (this is mainly an issue for systems with high processing power)
-        _time.sleep(1e-6)
-        seed = _time.time_ns() // 1000
+        seed = _secrets.randbelow(KEYSPACE_SIZE)
 
     charset = list(KEY_CHARSET)
 
