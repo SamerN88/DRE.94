@@ -17,14 +17,9 @@ def is_key(key):
     if len(key) != KEY_LENGTH:
         return False
 
-    # Check for character uniqueness
-    for ch in key:
-        if key.count(ch) != 1:
-            return False
-
-    # Check that key uses KEY_CHARMAP characters (ASCII 33 to 126)
-    for ch in key:
-        if ch not in KEY_CHARSET:
+    # Check that key uses all KEY_CHARSET characters (ASCII 33 to 126)
+    for ch in KEY_CHARSET:
+        if ch not in key:
             return False
 
     return True

@@ -72,7 +72,7 @@ def hash_seed(seed, size, base=M512):
 def generate_key(seed=None):
     """Generates a DRE.94 key: string of length 94 with distinct characters, using ASCII characters 33-126."""
 
-    # Default seed is randomly chosen from range(0, KEYSPACE_SIZE)
+    # Default seed is randomly chosen from the range [0, KEYSPACE_SIZE)
     if seed is None:
         seed = _secrets.randbelow(KEYSPACE_SIZE)
 

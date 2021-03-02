@@ -12,7 +12,7 @@ from radix import base94_to_base10
 def driver_cwd(filename=None):
     """Returns the path to the directory containing the driver code that initially called the module."""
 
-    sep = os.path.join('_', '').lstrip('_')  # returns '\' or '/' depending on operating system
+    sep = os.sep  # returns '\' or '/' depending on operating system
     try:
         dirpath = sep.join(traceback.extract_stack()[-3][0].split(sep)[:-1])
 
@@ -32,7 +32,7 @@ def driver_cwd(filename=None):
 def arg_check(arg, argname, argtypes):
     """Checks if passed argument 'arg' is one of the correct types in 'argtypes'."""
 
-    if type(argtypes) == type:
+    if isinstance(argtypes, type):
         argtypes = [argtypes]
 
     type_names = [typ.__name__ for typ in argtypes]
@@ -81,19 +81,14 @@ def key_error_check(key):
     msg = "input for argument 'key' is not a valid DRE.94 key (reason: {})"
 
     # Check that key is of type str (if key is represented as list or tuple, problems occur in encryption/decryption)
-    if type(key) != str:
-        raise TypeError(msg.format("DRE.94 key must be represented as a string (type str)"))
+    if isinstance(key, str):
+        raise TypeError(msg.format(f"DRE.94 key must be of type 'str', not '{type(key).__name__}'"))
 
     # Check for correct key length
     if len(key) != KEY_LENGTH:
         raise ValueError(msg.format(f"DRE.94 key must be of length {KEY_LENGTH}"))
 
-    # Check for character uniqueness
-    for ch in key:
-        if key.count(ch) != 1:
-            raise ValueError(msg.format(f"DRE.94 key must contain only distinct characters"))
-
-    # Check that key uses KEY_CHARMAP characters (ASCII 33 to 126)
-    for ch in key:
-        if ch not in KEY_CHARSET:
-            raise ValueError(msg.format(f"DRE.94 key must contain only ASCII characters 33 to 126, inclusive"))
+    # Check that key uses all KEY_CHARSET characters (ASCII 33 to 126)
+    for ch in KEY_CHARSET:
+        if ch not in key:
+            raise ValueError(msg.format(f"DRE.94 key must contain all ASCII characters 33 to 126, inclusive"))
