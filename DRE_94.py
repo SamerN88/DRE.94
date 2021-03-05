@@ -18,7 +18,7 @@
 # TODO: later make DRE.94 webpage, if deemed useful since Github already exists (useful for CV)
 #   [check out https://docs.python-guide.org/writing/structure/]
 
-# TODO: investigate whether base is just required to be the next prime after 1114111 (max Unicode)
+# TODO: investigate whether base is just required to be 1114112 (number of Unicode codepoints)
 # TODO: restructure encryption to encrypt in blocks of fixed length (much faster)
 #   Compare times of encrypting string of length 100000:
 #       encrypt: 810.3935477733612 sec
@@ -62,8 +62,8 @@ def hash_seed(seed, size, base=M512):
 
     hash_idx = 0
     for ch in seed[::-1]:
-        code = ord(ch)
-        hash_idx = (hash_idx * base + code) % size
+        codepoint = ord(ch)
+        hash_idx = (hash_idx * base + codepoint) % size
 
     return hash_idx
 
